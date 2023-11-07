@@ -1,0 +1,50 @@
+.tooltip {
+    background-color: white !important;
+    color: black !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 5px !important;
+    padding: 15px !important;
+    max-width: 400px !important;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2) !important;
+    opacity: 1;
+
+}
+
+.tooltip img {
+    object-fit: cover;
+    width:100%;
+    margin-bottom: 10px;
+}
+
+.tooltip p,
+.tooltip div {
+    margin-bottom: 5px;
+}
+
+.tooltip-button {
+    display: inline-block;
+    width:100%;
+    padding: 5px 15px;
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.tooltip:hover
+{
+    background-color: white !important;
+    opacity: 100%;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.6) !important;
+
+}
+.tooltip
+{
+    opacity: 100%;
+}
+.tooltip-content
+{
+    opacity: 100%;
+}

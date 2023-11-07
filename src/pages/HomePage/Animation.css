@@ -1,0 +1,45 @@
+@keyframes liftBarbell {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    25%, 75% {
+        transform: translateY(-30px); /* Dostosuj wartość */
+    }
+    50% {
+        transform: translateY(0);
+    }
+}
+
+.lift-barbell {
+    animation: liftBarbell 2s ease-in-out 1 forwards; /* Zmieniłem czas na 4s i dodano 1 iterację */
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(1100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes splitText {
+    0% {
+        text-shadow: none;
+    }
+    50% {
+        text-shadow: 0.05em 0 0 #000,
+        -0.05em 0 0 #000;
+    }
+    100% {
+        text-shadow: 0.2em 0 0 #000,
+        -0.2em 0 0 #000;
+    }
+}
+
+.slide-in {
+    animation: slideIn 2s ease-out forwards,
+    splitText 2s ease-out 1s forwards; /* 1s delay for the splitting effect */
+}

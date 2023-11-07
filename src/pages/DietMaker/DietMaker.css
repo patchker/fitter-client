@@ -1,0 +1,23 @@
+
+
+/* W pliku CSS lub w sekcji <style> */
+.hide-number-input-spinners {
+    @apply w-12 focus:outline-none focus:ring-0 focus:border-transparent border-transparent bg-transparent;
+}
+
+/* Dodatkowe style do ukrycia strzałek */
+.hide-number-input-spinners::-webkit-outer-spin-button,
+.hide-number-input-spinners::-webkit-inner-spin-button {
+    @apply appearance-none;
+    margin: 0; /* Dla WebKit */
+}
+
+.hide-number-input-spinners[type=number] {
+    -moz-appearance: textfield; /* Dla Firefox */
+}
+
+/* W pliku CSS lub w tagach <style> */
+.gradient-background {
+    background: linear-gradient(to bottom, #ffffff 0%, #f0f0f0 100%);
+}
+
