@@ -27,6 +27,7 @@ import withAuthProtection from "./config/withAuthProtection";
 import RecipeDetail from "./pages/Recipes/RecipeDetail";
 import DietMaker from "./pages/DietMaker/DietMaker";
 import UserList from "./pages/DietMaker/UserList";
+import DietConfig from "./pages/DietCalendar/DietConfig";
 
 const ProtectedDietCalendar = withAuthProtection(DietCalendar);
 const ProtectedOrderList = withAuthProtection(OrderList);
@@ -37,6 +38,7 @@ const ProtectedUserProfile = withAuthProtection(UserProfile);
 const ProtectedRecipeDetail = withAuthProtection(RecipeDetail);
 const ProtectedDietMaker = withAuthProtection(DietMaker);
 const ProtectedUserList = withAuthProtection(UserList);
+const ProtectedDietConfig = withAuthProtection(DietConfig);
 
 function App() {
   return (
@@ -61,6 +63,7 @@ function App() {
             <Route path="/dietmaker/:nick" element={<ProtectedDietMaker />} />
             <Route path="/PurchaseDiet/:planType" element={<PaymentProvider><ProtectedPurchaseDiet /></PaymentProvider>} />
             <Route path="/recipe/:id" element={<ProtectedRecipeDetail />} />
+            <Route path="/dietconfig" element={<ProtectedDietConfig />} />
 
 
           </Routes>

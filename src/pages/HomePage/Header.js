@@ -132,10 +132,9 @@ function Header() {
                                                                                      className="hover:underline"
                                                                                      onClick={() => setIsMenuOpen(false)}>DietaMaker</Link>
                     </li>
-                    <li className="  border-b-2 sm:border-b-2 lg:border-0 py-2"><Link to="/option3"
+                    <li className="  border-b-2 sm:border-b-2 lg:border-0 py-2"><Link to="/dietconfig"
                                                                                       className="hover:underline"
-                                                                                      onClick={() => setIsMenuOpen(false)}>Opcja
-                        3</Link></li>
+                                                                                      onClick={() => setIsMenuOpen(false)}>DietConfig</Link></li>
 
                     <li>
                         <div className={` ${isMenuOpen ? 'ml-0' : 'ml-10'} min-w-[100px] mt-2`}
