@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { usePayment } from '../../contexts/PaymentContext';
 import ip from '../../config/Ip'
+import {OrderPlacedContext} from "../../contexts/orderPlacedContext";
 
 function PaymentPage() {
     const navigate = useNavigate();
@@ -13,8 +14,13 @@ function PaymentPage() {
     const [zipCode, setZipCode] = useState("test3");
     const [country, setCountry] = useState("test4");
     const { paymentData } = usePayment();
+    const { orderPlaced, setOrderPlaced, setOrder } = useContext(OrderPlacedContext);
 
+    useEffect(() => {
+        console.log("CHANGED: ",orderPlaced);
 
+    }, [orderPlaced]);
+    //setOrderPlaced(true)
     React.useEffect(() => {
         if (paymentData) {
             setStreet(paymentData.address.street)
@@ -63,6 +69,10 @@ function PaymentPage() {
         })
             .then((response) => {
                 console.log(response);
+                setOrder()
+                setOrderPlaced(true)
+                console.log("SETTING TO TRUE");
+
                 navigate("/successPage");
             })
             .catch((error) => {

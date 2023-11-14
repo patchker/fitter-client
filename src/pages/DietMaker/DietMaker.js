@@ -12,6 +12,37 @@ import DraggableMeal from "./components/DraggableMeal"
 import DroppableDay from "./components/DroppableDay"
 import MealDropArea from "./components/MealDropArea"
 
+
+const DietInfo = ({ foodPreferences, showSummary, onTextLength }) => {
+    const infoText = () => {
+        let text = "";
+        if (foodPreferences.lactoseFree) text += "Bez laktozy.\n";
+        if (foodPreferences.glutenFree) text += "Bez glutenu.\n";
+        if (foodPreferences.nutFree) text += "Borzechów.\n";
+        if (foodPreferences.fishFree) text += "Bez ryb.\n";
+        if (foodPreferences.soyFree) text += "Bez soi.\n";
+
+        return text;
+    };
+
+    const summaryLength = 36; // Zdefiniuj długość podsumowania
+    const fullText = infoText();
+    const isLongText = fullText.length > summaryLength; // Sprawdź, czy tekst jest dłuższy niż podsumowanie
+
+
+    useEffect(() => {
+        if (onTextLength) {
+            onTextLength(fullText.length); // Przekazanie długości tekstu do nadrzędnego komponentu
+        }
+    }, [fullText, onTextLength]);
+
+    return (
+        <div style={{ whiteSpace: 'pre-wrap' }}>
+            {showSummary ? fullText.substring(0, 36) : fullText}
+        </div>
+    );
+};
+
 function getDisplayedDays(currentDate) {
     const yesterday = new Date(currentDate);
     const today = new Date(currentDate);
@@ -61,10 +92,47 @@ function DietMaker() {
     const [isLoading, setIsLoading] = useState(false);
     const [animationClass, setAnimationClass] = useState('');
     const [dietData, setDietData] = useState([]);
+    const [status, setStatus] = useState([]);
+    const [showFullText, setShowFullText] = useState(false);
+    const [foodPreferences, setFoodPreferences] = useState({
+        glutenFree: false,
+        lactoseFree: false,
+        nutFree: false,
+        fishFree: false,
+        soyFree: false
+    });
 
+    const summaryLength=36;
+    // W nadrzędnym komponencie
+    const [isLongText, setIsLongText] = useState(false);
+
+    const handleTextLength = (length) => {
+        setIsLongText(length > 36); // Ustawienie flagi w zależności od długości tekstu
+    };
+
+    const dietText = (
+        <DietInfo
+            foodPreferences={foodPreferences}
+            showSummary={!showFullText}
+            onTextLength={handleTextLength}
+        />
+    );
+    console.log("1isLongText",dietText)
+    console.log("2isLongText",summaryLength)
+    console.log("3isLongText",isLongText)
+
+    const toggleText = () => {
+        setShowFullText(!showFullText);
+    };
     function handleChanges() {
         setChangesMade(true);
     }
+    const handleSelectChanges = (event) => {
+
+        handleChanges()
+        setDietPlanInfo({ ...dietPlanInfo, status: event.target.value });
+    };
+
 
     const updateSearch = debounce((value) => {
         setDebouncedSearchTerm(value);
@@ -80,7 +148,8 @@ function DietMaker() {
         console.log("allDietData", allDietData)
         axios.post(ip + "/save_diet_data/", {
             userNick: nick,
-            diet_data: allDietData
+            diet_data: allDietData,
+            status:dietPlanInfo.status
         }, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
@@ -298,8 +367,24 @@ function DietMaker() {
         }).then(response => {
 
             const rawData = response.data;
+            console.log(rawData)
             const formattedData = formatDietData(rawData.days);
             setDietPlanInfo(rawData.diet_plan)
+
+            console.log("rawData.gluten_free",rawData.diet_plan.gluten_free)
+            console.log("rawData.lactose_free",rawData.diet_plan.lactose_free)
+            console.log("rawData.nut_free",rawData.diet_plan.nut_free)
+            console.log("rawData.fish_free",rawData.diet_plan.fish_free)
+            console.log("rawData.soy_free",rawData.diet_plan.soy_free)
+
+            setFoodPreferences({
+                glutenFree: rawData.diet_plan.gluten_free,
+                lactoseFree: rawData.diet_plan.lactose_free,
+                nutFree: rawData.diet_plan.nut_free,
+                fishFree: rawData.diet_plan.fish_free,
+                soyFree: rawData.diet_plan.soy_free
+            });
+
             const completeData = [...Array(3)].map((_, index) => {
                 const dateForDay = new Date(currentDate.getTime());
                 dateForDay.setDate(dateForDay.getDate() - (1 - index));
@@ -309,6 +394,8 @@ function DietMaker() {
 
 
             setDietData(Object.assign({}, ...completeData));
+
+            console.log(displayedDays)
         })
             .catch(error => {
                 console.error(error);
@@ -439,53 +526,99 @@ function DietMaker() {
             totalKcal
         };
     }
+    const isDayInRange = (day) => {
+        const dayDate = new Date(day);
+        const startDate = new Date(dietPlanInfo.diet_start_date);
+        const endDate = new Date(dietPlanInfo.diet_end_date);
+
+        // Ustawienie czasu na północ (00:00:00) dla każdej z dat
+        dayDate.setHours(0, 0, 0, 0);
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(0, 0, 0, 0);
+
+        return dayDate >= startDate && dayDate <= endDate;
+    };
+
+    const daysInRange = displayedDays.filter(isDayInRange).length;
+
+    console.log("daysInRange",daysInRange)
+    let gridClass = "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 ";
+    if (daysInRange === 3) {
+        gridClass += "lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 ";
+    }else if (daysInRange === 2) {
+        gridClass += "lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 ";
+    } else if (daysInRange === 1) {
+        gridClass += "lg:grid-cols-1 xl:grid-cols-1 2xl:grid-cols-1 ";
+    }
 
     return (
         <div className="flex flex-col p-4 ">
             <div className="flex flex-col md:flex-row w-full items-center mb-2">
-                <h1 className="text-2xl font-bold text-center mb-4 md:mb-0 md:text-left whitespace-nowrap">Plan diety
+                <h1 className=" sm:text-lg lg:text-2xl font-bold text-center mb-4 md:mb-0 md:text-left whitespace-nowrap">Plan diety
                     użytkownika {nick}</h1>
 
-                <div className="w-full flex flex-col md:flex-row items-center">
-                    <div className="w-full md:w-auto md:mx-auto">
+                <div className="w-full flex flex-col md:flex-row items-center justify-between">
+                    <div className="flex flex-col md:flex-row items-center mb-4 md:mb-0 md:ml-10">
                         <button
                             onClick={handleSaveAllDays}
-                            className={`text-white px-16 py-3 rounded mr-36 mx-auto block
-              ${changesMade ? 'bg-emerald-500 animate-pulse' : 'bg-gray-500'}`}
+                            className={`text-white px-4 py-3 rounded md:w-auto w-full mb-5 sm:mb-5 md:mb-0 md:mr-10 whitespace-nowrap
+                        ${changesMade ? 'bg-emerald-500 animate-pulse' : 'bg-gray-500'}`}
                             disabled={!changesMade}
                         >
                             {changesMade ? 'Zapisz dane' : 'Brak zmian'}
                         </button>
 
-                    </div>
+                        <div className="w-full md:w-36">
+                            <select value={dietPlanInfo.status} onChange={handleSelectChanges} className="form-select block w-full px-3 py-2 text-base font-normal text-gray-700 bg-gray-300 bg-clip-padding bg-no-repeat border border-solid border-gray-400 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none">
+                                <option value="new">New</option>
+                                <option value="pending">Pending</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
 
-                    <a href="/src/pages/Dieta/Dieta"
-                       className="hidden md:block bg-emerald-500 text-white px-4 py-2 rounded text-center">
-                        Sprawdź dostępne plany
-                    </a>
+                        <div className=" md:w-96 m-auto text-center w-96 ml-10">
+
+
+                            <div className="w-full md:w-96 text-center ">
+                                <div>
+                                    <h3 className={`font-bold`}>Preferencje diety:</h3>
+                                    <div className="text-container">
+                                        {dietText}
+                                        {isLongText && (
+                                            <button onClick={() => setShowFullText(!showFullText)}>
+                                                {showFullText ? 'Pokaż mniej' : 'Czytaj więcej'}
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
             </div>
 
 
-            <div className="flex flex-col md:flex-row md:justify-start mb-4 text-gray-400">
+            <div className=" flex-col md:flex-row md:justify-start mb-4 text-gray-400 hidden md:flex">
                 <span className="mr-2">DIET_ID: {dietPlanInfo.diet_id}</span>
                 <span className="mr-2">OD: {formatDate(dietPlanInfo.diet_start_date)}</span>
                 <span>DO: {formatDate(dietPlanInfo.diet_end_date)}</span>
             </div>
 
 
-            <div className="flex items-center justify-center space-x-4 mr-[334px] xl:mr-[360px]">
+            <div className="flex items-center justify-center space-x-4 sm:mr-0  md:mr-[334px] xl:mr-[360px] ">
 
 
                 <button
-                    className={`${(!isPreviousPeriodAvailable() || isLoading) && 'text-gray-500'}`}
+                    className={` whitespace-nowrap ${(!isPreviousPeriodAvailable() || isLoading) && 'text-gray-500'}`}
                     disabled={!isPreviousPeriodAvailable()}
                     onClick={() => changeDateWithAnimation(-3)}
                 >
                     &lt; Poprzednie 3 dni
                 </button>
                 <button
-                    className={`${(!isNextPeriodAvailable() || isLoading) && 'text-gray-500'}`}
+                    className={`whitespace-nowrap ${(!isNextPeriodAvailable() || isLoading) && 'text-gray-500'}`}
                     disabled={!isNextPeriodAvailable()}
                     onClick={() => changeDateWithAnimation(3)}
                 >
@@ -495,10 +628,10 @@ function DietMaker() {
 
 
             <DndProvider backend={HTML5Backend}>
-                <div className="flex flex-col md:flex-row justify-center items-start pb-4">
-                    <div
-                        className={`grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-2 ${animationClass}`}>
-                        {displayedDays.map((dayDate, index) => {
+                <div className="flex flex-col md:flex-row justify-center sm:items-center md:items-start pb-4">
+                    <div className={`${gridClass} gap-20 mt-2 ${animationClass}`}>
+
+                    {displayedDays.map((dayDate, index) => {
                             return (
                                 <DroppableDay
                                     key={index}
@@ -522,11 +655,11 @@ function DietMaker() {
                     </div>
 
                     {/* Sekcja wyszukiwania */}
-                    <div className="search-section ml-10 md:w-72 lg:w-80 mt-2">
+                    <div className="search-section ml-10 md:w-80 lg:w-96 mt-2">
                         <input
                             type="text"
                             placeholder="Szukaj posiłków..."
-                            className="p-2 w-full bg-gray-100 rounded h-12"
+                            className="p-2 w-full bg-gray-100 rounded h-12 mb-2"
                             onChange={(e) => delayedQuery(e.target.value)}
                         />
                         {isLoading ? (

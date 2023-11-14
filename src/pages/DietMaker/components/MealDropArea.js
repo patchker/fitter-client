@@ -89,13 +89,13 @@ function MealDropArea({
         <div
             ref={drop}
             key={mealType}
-            className={`relative flex flex-col p-4 rounded-lg shadow-md mb-4 w-full max-w-xs ${currentBg} min-h-[120px] transition duration-150 ease-in-out space-y-2`}
+            className={`relative flex flex-col p-4 rounded-lg shadow-md mb-4 min-w-[14rem]  ${currentBg} min-h-[120px] transition duration-150 ease-in-out space-y-2`}
         >
             {filteredMeals.length > 0 ? (
                 filteredMeals.map((meal, index) => (
                     <div
                         key={meal.uuid}
-                        className={`flex flex-col p-2 ${index === filteredMeals.length - 1 ? '' : 'border-b border-gray-300'} cursor-pointer`}
+                        className={`flex flex-col p-2  ${index === filteredMeals.length - 1 ? '' : 'border-b border-gray-300'} cursor-pointer`}
                         onClick={() => handleContainerClick(meal.uuid)}
                     >
                         <div className="flex justify-between items-center space-x-2">

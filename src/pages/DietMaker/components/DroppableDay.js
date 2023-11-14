@@ -68,7 +68,7 @@ function DroppableDay({
         <div
             className={`bg-gray-100 p-4 rounded-lg shadow-md  h-full ${isToday(day.date) && 'border-blue-400 border-4'}`}
             style={{minHeight: '250px'}}>
-            <div className="flex justify-between items-center border-b-2 pb-1">
+            <div className="flex justify-between items-center border-b-2 pb-1 ">
                 <h2 className="text-2xl font-semibold">{weekDayCapitalized}</h2>
                 <span className="text-gray-500">{day.date}</span>
             </div>
@@ -82,7 +82,7 @@ function DroppableDay({
                 // console.log("Key (mealType2):", mealType2); // Logowanie wartości klucza
 
                 return (
-                    <div className="flex flex-col mt-4 " key={`${mealType2}-${day.date}`}>
+                    <div className="flex flex-col mt-4  " key={`${mealType2}-${day.date}`}>
                         <span className="text-lg font-medium text-left">{formatMealType(mealType2)}</span>
                         <MealDropArea
                             key={mealType2}

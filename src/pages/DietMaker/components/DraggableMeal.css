@@ -1,0 +1,36 @@
+.lactose-free { background-color: mediumpurple; }
+.nut-free { background-color: lightblue; }
+.soy-free { background-color: lightyellow; }
+.gluten-free { background-color: lightcoral; }
+.fish-free { background-color: lightpink; }
+.no-allergens { background-color: white; }
+
+
+
+.lactose-free-indicator {
+    background-color: mediumpurple !important;
+}
+
+.nut-free-indicator {
+    background-color: saddlebrown !important;
+}
+.soy-free-indicator {
+    background-color: yellow !important;
+}
+.fish-free-indicator {
+    background-color: dodgerblue !important;
+}
+.gluten-free-indicator {
+    background-color: sandybrown !important;
+}
+
+
+.tooltip {
+    font-weight: bold;
+    margin:0;
+    height: 35px !important;
+    padding:5px 5px !important;
+    position: relative;
+    display: inline-block;
+}
+

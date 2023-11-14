@@ -7,10 +7,14 @@ export const usePayment = () => {
 };
 
 export const PaymentProvider = ({ children }) => {
+
     const [paymentData, setPaymentData] = useState(null);
+    const [orderPlaced, setOrderPlaced] = useState(false);
+
+    //console.log("Payment",{ orderPlaced, setOrderPlaced });
 
     return (
-        <PaymentContext.Provider value={{ paymentData, setPaymentData }}>
+        <PaymentContext.Provider value={{ paymentData, setPaymentData, orderPlaced, setOrderPlaced }}>
             {children}
         </PaymentContext.Provider>
     );

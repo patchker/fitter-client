@@ -28,6 +28,7 @@ import RecipeDetail from "./pages/Recipes/RecipeDetail";
 import DietMaker from "./pages/DietMaker/DietMaker";
 import UserList from "./pages/DietMaker/UserList";
 import DietConfig from "./pages/DietCalendar/DietConfig";
+import { OrderProvider } from './contexts/orderPlacedContext';
 
 const ProtectedDietCalendar = withAuthProtection(DietCalendar);
 const ProtectedOrderList = withAuthProtection(OrderList);
@@ -39,13 +40,17 @@ const ProtectedRecipeDetail = withAuthProtection(RecipeDetail);
 const ProtectedDietMaker = withAuthProtection(DietMaker);
 const ProtectedUserList = withAuthProtection(UserList);
 const ProtectedDietConfig = withAuthProtection(DietConfig);
+//const [orderPlaced, setOrderPlaced] = useState(false);
 
 function App() {
   return (
     <div className="App">
       <Router>
+
         <div className="min-h-screen flex flex-col font-poppins">
-          <Header />
+          <OrderProvider>
+
+          <Header/>
           <div className="mb-auto">
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -70,6 +75,8 @@ function App() {
           </div>
 
           <Footer />
+          </OrderProvider>
+
         </div>
       </Router>
     </div>

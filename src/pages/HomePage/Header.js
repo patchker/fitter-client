@@ -1,10 +1,11 @@
 import {useAuth} from '../../contexts/AuthContext';
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
 import {useLocation, Link, useNavigate} from 'react-router-dom';
 import axios from "axios";
 import ip from '../../config/Ip'
 import {FaBars} from "react-icons/fa";
-
+import { usePayment } from '../../contexts/PaymentContext';
+import { OrderPlacedContext } from '../../contexts/orderPlacedContext';
 
 function Header() {
     const {currentUser, setCurrentUser, logout} = useAuth();
@@ -16,8 +17,22 @@ function Header() {
     const menuRef = useRef();
     const [fetch, setFetch] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const { orderPlaced, setOrderPlaced } = useContext(OrderPlacedContext);
 
+    useEffect(() => {
+        console.log("ORder placed");
+        if(orderPlaced)
+        {
+            setDietPath("/dietcalendar");
 
+        }else{
+            setDietPath("/dieta");
+
+        }
+
+    }, [orderPlaced]);
+
+console.log("orderPlaced",orderPlaced)
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
@@ -56,6 +71,9 @@ function Header() {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [menuRef]);
+
+
+
 
 
     useEffect(() => {

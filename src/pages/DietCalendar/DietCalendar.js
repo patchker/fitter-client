@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import axios from 'axios';
 import './DietCalendar.css';
 import DayCard from './components/DayCard';
@@ -6,6 +6,7 @@ import {useNavigate} from 'react-router-dom';
 import {useAuth} from '../../contexts/AuthContext';
 import ip from "../../config/Ip";
 import CalendarNavigation from "./components/CalendarNavigation";
+import { OrderPlacedContext } from '../../contexts/orderPlacedContext';
 
 function DietSchedule() {
     const {logout} = useAuth();
@@ -13,11 +14,34 @@ function DietSchedule() {
     const [animationClass, setAnimationClass] = useState('');
     const [orderInfo, setOrderInfo] = useState(null); // Nowy stan dla przechowywania informacji o zamówieniu
     const [isLoading, setIsLoading] = useState(false); // Nowy stan
+    const [preferences, setPreferences] = useState(''); // Nowy stan
     const [dietData, setDietData] = useState([]);
     const [currentWeekStart, setCurrentWeekStart] = useState(getMonday(new Date()));
     const [numberOfDaysToShow, setNumberOfDaysToShow] = useState(0);
+    const [isLoading2, setIsLoading2] = useState(true); // Now set to true by default
+    const { orderPlaced, setOrderPlaced, setOrder } = useContext(OrderPlacedContext);
 
 
+    useEffect(() => {
+        console.log("preferences_set updated", preferences);
+
+        if (preferences === null) {
+            setIsLoading2(false);
+        } else if (preferences === false) {
+            navigate('/dietconfig', { state: { orderInfo: orderInfo } });
+        }
+
+    }, [preferences]);
+
+    /*
+    useEffect(() => {
+        console.log("ORderinfo update",orderInfo)
+        if(orderInfo.status==="pending")
+        {
+            return <div>PENDING</div>
+        }
+    }, [orderInfo]);
+*/
     function formatDate(date) {
         const d = new Date(date);
         const year = d.getFullYear();
@@ -72,6 +96,10 @@ function DietSchedule() {
 
         const orderInfo = rawData.order_info;
         setOrderInfo(orderInfo);
+
+
+
+
         return formattedData;
     }
 
@@ -147,7 +175,15 @@ function DietSchedule() {
             },
             params: {startDate, endDate}
         }).then(response => {
+            setIsLoading2(false); // Stop loading when data processing is done
+
             const rawData = response.data;
+            console.log("rawData",rawData)
+
+            const preferences_set2 = rawData.preferences_set;
+
+            console.log("preferences_set",preferences_set2)
+            setPreferences(preferences_set2);
             const formattedData = formatDietData(rawData);
             const completeData = days.map((day, index) => {
                 const currentDate = new Date(currentWeekStart);
@@ -160,12 +196,17 @@ function DietSchedule() {
             setDietData(Object.assign({}, ...completeData));
         })
             .catch(error => {
+                setIsLoading2(false); // Stop loading when data processing is done
+                setOrderPlaced(false)
                 if (error.response && error.response.status === 401) {
                     logout();
                     navigate("/login")
                 }
             });
-    }, [currentWeekStart]);
+    }, [currentWeekStart, logout, navigate]);
+
+
+
 
 
     const [displayedDaysCount, setDisplayedDaysCount] = useState(0);
@@ -196,41 +237,74 @@ function DietSchedule() {
     }, [tempDisplayedDays]); // Zależność od tempDisplayedDays, aby zapewnić aktualizację stanu
 
     const getGridTemplateColumns = () => {
-        console.log("displayedDaysCount",displayedDaysCount)
-        // Tutaj możesz dostosować wartości 'sm:', 'md:', 'lg:', 'xl:' w zależności od potrzeb
-        // Przykład może zakładać Tailwind CSS
-        let classes = 'grid-cols-1';
+        // Tailwind CSS classes for dynamic grid columns
+        let classes = 'grid-cols-1'; // Domyślnie jedna kolumna dla mobilnych
+
         if (displayedDaysCount > 1) {
-            classes += ` sm:grid-cols-${Math.min(displayedDaysCount, 2)}`;
+            // Zawsze dwa dni na małych ekranach, jeśli jest więcej niż jeden dzień
+            classes += ` sm:grid-cols-2`;
         }
         if (displayedDaysCount > 2) {
-            classes += ` md:grid-cols-${Math.min(displayedDaysCount, 3)}`;
+            // Trzy dni na ekranach średnich
+            classes += ` md:grid-cols-3`;
         }
         if (displayedDaysCount > 3) {
-            classes += ` lg:grid-cols-${Math.min(displayedDaysCount, 4)}`;
+            // Cztery dni na ekranach dużych
+            classes += ` lg:grid-cols-4`;
         }
         if (displayedDaysCount > 4) {
-            console.log("AAAdisplayedDaysCount",displayedDaysCount)
-            classes += ` xl:grid-cols-${displayedDaysCount}`;
+            // Pięć dni na ekranach bardzo dużych
+            classes += ` xl:grid-cols-5`;
         }
-        if (displayedDaysCount === 5) {
-            console.log("AAAdisplayedDaysCount",displayedDaysCount)
-            classes += ` lg:grid-cols-5`;
-        } if (displayedDaysCount === 6) {
-            console.log("AAAdisplayedDaysCount",displayedDaysCount)
-            classes += ` lg:grid-cols-6`;
-        }if (displayedDaysCount === 7) {
-            console.log("AAAdisplayedDaysCount",displayedDaysCount)
-            classes += ` lg:grid-cols-7`;
+        if (displayedDaysCount > 5) {
+            // Sześć dni na ekranach jeszcze większych, jeśli masz taki breakpoint w swoim Tailwind
+            classes += ` 2xl:grid-cols-7`;
         }
+        if (displayedDaysCount > 6) {
+            // Siedem dni na ekranach największych
+            classes += ` 3xl:grid-cols-7`;
+        }
+
         return classes;
     };
 
+
+
+    if (orderInfo && orderInfo.status === "pending") {
+        return (
+            <div className="flex flex-col items-center justify-center h-screen bg-gray-100 p-4 pt-0">
+                <div className="bg-white shadow-xl rounded-lg p-8 max-w-sm w-full">
+                    <h2 className="text-2xl font-semibold text-center text-gray-800 mb-4">Dieta w trakcie tworzenia</h2>
+                    <p className="text-center text-gray-600 mb-6">Twoja indywidualna dieta jest obecnie przygotowywana. Oto szczegóły:</p>
+                    <div className="mb-4">
+                        <h3 className="text-lg font-medium text-gray-700">Identyfikator diety:</h3>
+                        <p className="text-gray-500">{orderInfo.id}</p>
+                    </div>
+                    <div className="mb-4">
+                        <h3 className="text-lg font-medium text-gray-700">Data rozpoczęcia:</h3>
+                        <p className="text-gray-500">{formatDate(orderInfo.start_date)}</p>
+                    </div>
+                    <div className="mb-6">
+                        <h3 className="text-lg font-medium text-gray-700">Data zakończenia:</h3>
+                        <p className="text-gray-500">{formatDate(orderInfo.end_date)}</p>
+                    </div>
+
+                </div>
+            </div>
+        );
+    }
+
+
+
+    if (isLoading2) {
+        return <div>Loading...</div>; // Or any other loading indicator you prefer
+    }
+
     return (
-        <div className="flex flex-col items-center p-4 mt-8">
+               <div className="flex flex-col items-center p-4 mt-8">
             <div className="flex flex-col md:flex-row w-full justify-between items-center mb-4">
                 <h1 className="text-3xl font-bold text-center mb-4 md:mb-0 md:mr-4">Twój plan diety na ten tydzień</h1>
-                <a href="/Dieta/Dieta" className="bg-emerald-500 text-white px-4 py-2 rounded md:self-start">
+                <a href="/Dieta" className="bg-emerald-500 text-white px-4 py-2 rounded md:self-start">
                     Sprawdź dostępne plany
                 </a>
             </div>

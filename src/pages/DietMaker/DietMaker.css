@@ -21,3 +21,17 @@
     background: linear-gradient(to bottom, #ffffff 0%, #f0f0f0 100%);
 }
 
+
+.text-container {
+    overflow: hidden;
+    transition: max-height 0.9s ease;
+}
+
+.text-container.collapsed {
+    max-height: 70px; /* Adjust as needed for your short text */
+}
+
+.text-container.expanded {
+    max-height: 500px; /* Set this to a value that's greater than the content's height */
+}
+
