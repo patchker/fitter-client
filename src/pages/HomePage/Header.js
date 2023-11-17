@@ -150,9 +150,9 @@ console.log("orderPlaced",orderPlaced)
                                                                                      className="hover:underline"
                                                                                      onClick={() => setIsMenuOpen(false)}>DietaMaker</Link>
                     </li>
-                    <li className="  border-b-2 sm:border-b-2 lg:border-0 py-2"><Link to="/dietconfig"
+                    <li className="  border-b-2 sm:border-b-2 lg:border-0 py-2"><Link to="/body"
                                                                                       className="hover:underline"
-                                                                                      onClick={() => setIsMenuOpen(false)}>DietConfig</Link></li>
+                                                                                      onClick={() => setIsMenuOpen(false)}>Ciało</Link></li>
 
                     <li>
                         <div className={` ${isMenuOpen ? 'ml-0' : 'ml-10'} min-w-[100px] mt-2`}

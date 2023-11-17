@@ -28,6 +28,7 @@ import RecipeDetail from "./pages/Recipes/RecipeDetail";
 import DietMaker from "./pages/DietMaker/DietMaker";
 import UserList from "./pages/DietMaker/UserList";
 import DietConfig from "./pages/DietCalendar/DietConfig";
+import Body from "./pages/Body/Body";
 import { OrderProvider } from './contexts/orderPlacedContext';
 
 const ProtectedDietCalendar = withAuthProtection(DietCalendar);
@@ -40,6 +41,7 @@ const ProtectedRecipeDetail = withAuthProtection(RecipeDetail);
 const ProtectedDietMaker = withAuthProtection(DietMaker);
 const ProtectedUserList = withAuthProtection(UserList);
 const ProtectedDietConfig = withAuthProtection(DietConfig);
+const ProtectedBody = withAuthProtection(Body);
 //const [orderPlaced, setOrderPlaced] = useState(false);
 
 function App() {
@@ -69,6 +71,7 @@ function App() {
             <Route path="/PurchaseDiet/:planType" element={<PaymentProvider><ProtectedPurchaseDiet /></PaymentProvider>} />
             <Route path="/recipe/:id" element={<ProtectedRecipeDetail />} />
             <Route path="/dietconfig" element={<ProtectedDietConfig />} />
+            <Route path="/body" element={<ProtectedBody />} />
 
 
           </Routes>
