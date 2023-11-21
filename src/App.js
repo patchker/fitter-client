@@ -29,7 +29,11 @@ import DietMaker from "./pages/DietMaker/DietMaker";
 import UserList from "./pages/DietMaker/UserList";
 import DietConfig from "./pages/DietCalendar/DietConfig";
 import Body from "./pages/Body/Body";
+import AddTraining from "./pages/Body/AddTraining";
 import { OrderProvider } from './contexts/orderPlacedContext';
+import ActualMeasurements from './pages/Body/components/ActualMeasurements';
+import AddMeasurement from './pages/Body/components/AddMeasurement';
+import Trainings from './pages/Body/components/Trainings';
 
 const ProtectedDietCalendar = withAuthProtection(DietCalendar);
 const ProtectedOrderList = withAuthProtection(OrderList);
@@ -42,6 +46,10 @@ const ProtectedDietMaker = withAuthProtection(DietMaker);
 const ProtectedUserList = withAuthProtection(UserList);
 const ProtectedDietConfig = withAuthProtection(DietConfig);
 const ProtectedBody = withAuthProtection(Body);
+const ProtectedAddTraining = withAuthProtection(AddTraining);
+const ProtectedActualMeasurements = withAuthProtection(ActualMeasurements);
+const ProtectedAddMeasurement = withAuthProtection(AddMeasurement);
+const ProtectedTrainings = withAuthProtection(Trainings);
 //const [orderPlaced, setOrderPlaced] = useState(false);
 
 function App() {
@@ -72,6 +80,10 @@ function App() {
             <Route path="/recipe/:id" element={<ProtectedRecipeDetail />} />
             <Route path="/dietconfig" element={<ProtectedDietConfig />} />
             <Route path="/body" element={<ProtectedBody />} />
+            <Route path="/addtraining" element={<ProtectedAddTraining />} />
+            <Route path="/addmeasurement" element={<ProtectedAddMeasurement />} />
+            <Route path="/body/measurements" element={<ProtectedActualMeasurements />} />
+            <Route path="/trainings" element={<ProtectedTrainings />} />
 
 
           </Routes>

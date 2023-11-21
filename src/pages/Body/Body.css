@@ -1,0 +1,66 @@
+.card {
+    padding: 1rem;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+    margin-bottom: 1rem;
+    text-align: center; /* Wycentrowanie treści */
+    min-height: 150px;
+}
+.number {
+    font-size: 3rem; /* Duża liczba */
+    font-weight: bold;
+}
+
+.text {
+    font-size: 0.875rem; /* Mniejszy tekst */
+    color: grey;
+}
+.center-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Aby upewnić się, że kafelki rozciągają się na pełną dostępną wysokość */
+}
+
+
+.header-text {
+    font-size: 1.25em;
+    font-weight: bold;
+    /* Inne style dla nagłówka */
+}
+
+.session-block {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    /* Style dla każdej sesji treningowej */
+}
+
+.session-date {
+    /* Style dla daty */
+}
+
+.exercise-block {
+    /* Style dla bloku ćwiczeń */
+}
+
+.exercise-name {
+    color: #333;
+    /* Style dla nazwy ćwiczenia */
+}
+
+.serie-details {
+    font-size: 0.9em;
+    color: #666;
+    /* Style dla szczegółów serii */
+}
+.current-measurements {
+    top: 0; /* Ustawienie na górze kafelka */
+    left: 50%; /* Wyśrodkowanie w poziomie */
+    transform: translateX(-50%); /* Precyzyjne wyśrodkowanie */
+    padding: 5px; /* Odstępy wewnętrzne */
+    border-radius: 5px; /* Zaokrąglone rogi */
+    font-size: 12px; /* Rozmiar czcionki */
+    font-weight: bold; /* Waga czcionki */
+    color: black; /* Kolor czcionki */
+}
