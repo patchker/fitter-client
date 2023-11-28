@@ -122,7 +122,8 @@ function ActualMeasurements() {
 
     return (
         <div className="measurements-container p-4">
-            <div className="w-full flex justify-end relative">
+            <h1 className="text-2xl font-semibold">Historia pomiarów</h1>
+            <div className="w-full flex justify-end relative ">
                 <div className="relative">
                     <button className={`mr-20 w-30 p-3 rounded text-white font-semibold ${isTodayMeasured ? 'bg-gray-400' : 'bg-emerald-500'}`}
                             disabled={isTodayMeasured}
@@ -136,23 +137,28 @@ function ActualMeasurements() {
             </div>
 
 
-    {measurements.length > 0 ? (
-                <ul>
+            {measurements.length > 0 ? (
+                    <div className=" flex flex-col justify-center items-center ">
+                <div className="w-full max-w-[800px]">
                     {measurements.map((measurement, index) => (
-                        <li key={index} className="flex justify-between items-center bg-white p-4 m-2 rounded-lg shadow-md">
-            <span className="text-gray-700 text-sm md:text-base">
-                Date: {measurement.date}, Waist: {measurement.waist}, Chest: {measurement.chest}, Bicep: {measurement.bicep}, Thigh: {measurement.thigh}
-            </span>
+                        <div key={index} className="flex justify-between items-center bg-white p-4 m-2 rounded-lg shadow-md">
+                            <div>
+                                <span className="text-gray-700 text-sm md:text-base mr-2">{measurement.date}</span>
+                                <span className="text-gray-700 text-sm md:text-base mr-2">Waist: {measurement.waist}</span>
+                                <span className="text-gray-700 text-sm md:text-base mr-2">Chest: {measurement.chest}</span>
+                                <span className="text-gray-700 text-sm md:text-base mr-2">Bicep: {measurement.bicep}</span>
+                                <span className="text-gray-700 text-sm md:text-base">Thigh: {measurement.thigh}</span>
+                            </div>
                             <button onClick={() => requestDelete(measurement.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                 X
                             </button>
-                        </li>
+                        </div>
                     ))}
-                </ul>
-
+                </div>
+                    </div>
             ) : (
-                <p>No measurements found.</p>
-            )}
+        <p>No measurements found.</p>
+    )}
 
 
 

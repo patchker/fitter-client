@@ -31,3 +31,9 @@ code {
   font-weight: normal;
   font-style: normal;
 }
+@font-face {
+  font-family: 'Protector'; /* Nazwa, która będzie używana w konfiguracji TailwindCSS i w komponentach React */
+  src: url('../public/Protector.ttf') format('truetype'); /* Ścieżka do pliku czcionki; upewnij się, że jest poprawna */
+  font-weight: normal;
+  font-style: normal;
+}

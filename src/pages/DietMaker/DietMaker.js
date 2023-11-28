@@ -628,10 +628,11 @@ function DietMaker() {
 
 
             <DndProvider backend={HTML5Backend}>
-                <div className="flex flex-col md:flex-row justify-center sm:items-center md:items-start pb-4">
-                    <div className={`${gridClass} gap-20 mt-2 ${animationClass}`}>
-
-                    {displayedDays.map((dayDate, index) => {
+                <div className="flex flex-col md:flex-row justify-center md:justify-start sm:items-center md:items-start pb-4 w-full">
+                    {/* Sekcja dni */}
+                    <div className="flex-grow md:w-3/4">
+                        <div className={`${gridClass} gap-10 mt-2 ${animationClass}`}>
+                            {displayedDays.map((dayDate, index) => {
                             return (
                                 <DroppableDay
                                     key={index}
@@ -652,10 +653,11 @@ function DietMaker() {
                                 />
                             )
                         })}
+                        </div>
                     </div>
 
                     {/* Sekcja wyszukiwania */}
-                    <div className="search-section ml-10 md:w-80 lg:w-96 mt-2">
+                    <div className="ml-10 md:w-1/4 mt-2">
                         <input
                             type="text"
                             placeholder="Szukaj posiłków..."

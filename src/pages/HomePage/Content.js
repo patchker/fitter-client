@@ -1,26 +1,33 @@
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 function Content() {
     return (
-        <div className="flex flex-col justify-center items-center h-full border-2 border-gray-100 p-4 space-y-4 pt-16">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                {[...Array(3)].map((_, idx) => (
-                    <div key={idx} className="flex flex-col space-y-4">
+        <div className="flex flex-col justify-center items-center h-full border-2 border-gray-200 p-6 space-y-6 pt-10 bg-white rounded-lg shadow-md">
+            <div className=" glerspace-y-6 md:space-y-0 md:grid md:grid-cols-3 gap-6 w-full">
+                <div className="flex flex-col space-y-6 bg-gray-50 p-4 rounded-lg shadow-sm">
+                    {/* Introductory Text */}
+                    <h2 className="text-2xl font-semibold text-center text-gray-800">Twoja Droga do Zdrowszego Życia</h2>
 
-                        <Skeleton width={200} height={40}/>
-                        <Skeleton width={300} height={20}/>
-                        <Skeleton width={250} height={20}/>
-                        <Skeleton width={280} height={20}/>
-                        <Skeleton width={150} height={150} circle={true}/>
+                    {/* Feature Highlight */}
+                    <p className="text-lg text-gray-700 text-center">Poznaj nasze narzędzia</p>
+                    <p className="text-base text-gray-600">Śledź swoje postępy i osiągaj cele zdrowotne z naszymi spersonalizowanymi planami.</p>
 
-                        <div className="w-full flex flex-col space-y-2">
-                            {[...Array(5)].map((item, index) => (
-                                <Skeleton key={index} width="100%" height={20}/>
-                            ))}
-                        </div>
-                    </div>
-                ))}
+                    {/* Action Button */}
+                    <Link to="/dieta" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-center transition-colors duration-200">
+                        Przejdź do Diety
+                    </Link>
+
+                    {/* List of Benefits */}
+                    <ul className="list-disc list-inside text-gray-600">
+                        <li>Zdrowe przepisy</li>
+                        <li>Personalizowane plany żywieniowe</li>
+                        <li>Wsparcie społeczności</li>
+                        <li>Monitorowanie postępów</li>
+                        <li>Porady ekspertów</li>
+                    </ul>
+                </div>
             </div>
         </div>
     );

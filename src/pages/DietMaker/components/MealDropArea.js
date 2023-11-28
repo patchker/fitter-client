@@ -95,7 +95,7 @@ function MealDropArea({
                 filteredMeals.map((meal, index) => (
                     <div
                         key={meal.uuid}
-                        className={`flex flex-col p-2  ${index === filteredMeals.length - 1 ? '' : 'border-b border-gray-300'} cursor-pointer`}
+                        className={`flex flex-col p-2 rounded-2xl   hover:scale-[102%] border-2 border-gray-200 shadow-md hover:shadow-lg hover:transition hover:duration-150  ${index === filteredMeals.length - 1 ? '' : 'border-b border-gray-200'} cursor-pointer`}
                         onClick={() => handleContainerClick(meal.uuid)}
                     >
                         <div className="flex justify-between items-center space-x-2">

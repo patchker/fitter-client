@@ -238,15 +238,15 @@ function DietSchedule() {
 
     const getGridTemplateColumns = () => {
         // Tailwind CSS classes for dynamic grid columns
-        let classes = 'grid-cols-1'; // Domyślnie jedna kolumna dla mobilnych
+        let classes = 'grid-cols-1 max-w-[400px] gap-4'; // Domyślnie jedna kolumna dla mobilnych
 
         if (displayedDaysCount > 1) {
             // Zawsze dwa dni na małych ekranach, jeśli jest więcej niż jeden dzień
-            classes += ` sm:grid-cols-2`;
+            classes += ` sm:grid-cols-2 sm:max-w-[700px] sm:gap-20`;
         }
         if (displayedDaysCount > 2) {
             // Trzy dni na ekranach średnich
-            classes += ` md:grid-cols-3`;
+            classes += ` md:grid-cols-3 md:max-w-full md:gap-4`;
         }
         if (displayedDaysCount > 3) {
             // Cztery dni na ekranach dużych
@@ -300,13 +300,21 @@ function DietSchedule() {
         return <div>Loading...</div>; // Or any other loading indicator you prefer
     }
 
+    const handleNavigate = () => {
+        navigate('/ingredients', { state: { currentWeekStart } });
+    }
+
     return (
                <div className="flex flex-col items-center p-4 mt-8">
             <div className="flex flex-col md:flex-row w-full justify-between items-center mb-4">
                 <h1 className="text-3xl font-bold text-center mb-4 md:mb-0 md:mr-4">Twój plan diety na ten tydzień</h1>
-                <a href="/Dieta" className="bg-emerald-500 text-white px-4 py-2 rounded md:self-start">
-                    Sprawdź dostępne plany
-                </a>
+
+                <button onClick={handleNavigate}
+                        className="bg-emerald-500 text-white px-4 py-2 rounded md:self-start"
+                >
+
+Lista składników
+                </button>
             </div>
 
             <CalendarNavigation

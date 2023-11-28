@@ -42,7 +42,7 @@ function DayCard({day, date, meals, isToday}) {
 
     return (
         <div
-            className={`bg-gray-100 p-4 rounded-lg shadow-md space-y-4 h-full ${isToday ? 'ring-4 ring-blue-300' : ''}`}
+            className={`bg-gray-100 p-4 rounded-lg  shadow-md space-y-4 h-full ${isToday ? 'ring-4 ring-blue-300' : ''}`}
             style={{minHeight: '450px'}}>
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-semibold">{day.charAt(0).toUpperCase() + day.slice(1)}</h2>

@@ -34,6 +34,11 @@ import { OrderProvider } from './contexts/orderPlacedContext';
 import ActualMeasurements from './pages/Body/components/ActualMeasurements';
 import AddMeasurement from './pages/Body/components/AddMeasurement';
 import Trainings from './pages/Body/components/Trainings';
+import Ingredients from "./pages/DietCalendar/components/Ingredients";
+import MealAI from "./pages/DietCalendar/MealAI";
+
+import { TrainingProvider } from './contexts/TrainingContext';
+
 
 const ProtectedDietCalendar = withAuthProtection(DietCalendar);
 const ProtectedOrderList = withAuthProtection(OrderList);
@@ -50,6 +55,7 @@ const ProtectedAddTraining = withAuthProtection(AddTraining);
 const ProtectedActualMeasurements = withAuthProtection(ActualMeasurements);
 const ProtectedAddMeasurement = withAuthProtection(AddMeasurement);
 const ProtectedTrainings = withAuthProtection(Trainings);
+const ProtectedIngredients = withAuthProtection(Ingredients);
 //const [orderPlaced, setOrderPlaced] = useState(false);
 
 function App() {
@@ -59,6 +65,7 @@ function App() {
 
         <div className="min-h-screen flex flex-col font-poppins">
           <OrderProvider>
+            <TrainingProvider>
 
           <Header/>
           <div className="mb-auto">
@@ -80,16 +87,23 @@ function App() {
             <Route path="/recipe/:id" element={<ProtectedRecipeDetail />} />
             <Route path="/dietconfig" element={<ProtectedDietConfig />} />
             <Route path="/body" element={<ProtectedBody />} />
+
             <Route path="/addtraining" element={<ProtectedAddTraining />} />
+              <Route path="/trainings" element={<ProtectedTrainings />} />
+
+
             <Route path="/addmeasurement" element={<ProtectedAddMeasurement />} />
             <Route path="/body/measurements" element={<ProtectedActualMeasurements />} />
-            <Route path="/trainings" element={<ProtectedTrainings />} />
+            <Route path="/ingredients" element={<ProtectedIngredients />} />
+            <Route path="/mealai" element={<MealAI />} />
 
 
           </Routes>
           </div>
 
           <Footer />
+            </TrainingProvider>
+
           </OrderProvider>
 
         </div>

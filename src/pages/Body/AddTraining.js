@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import Ip from "../../config/Ip"
+import debounce from 'lodash.debounce';
+
 const AddTraining = () => {
     const [trainingData, setTrainingData] = useState([]);
     const [exercise, setExercise] = useState('');
@@ -10,9 +12,35 @@ const AddTraining = () => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingSessionId, setEditingSessionId] = useState(null);
     const [trainingId, setTrainingId] = useState(null);
-
-
+    const [isTrainingStarted, setIsTrainingStarted] = useState(false);
+    const [exercisesList, setExercisesList] = useState([]);
+    const [showDropdown, setShowDropdown] = useState(false);
     useEffect(() => {
+        // Function to fetch exercises from the database
+        const fetchExercises = async (query) => {
+            try {
+                const response = await fetch(Ip+`/api/exercises?search=${query}`);
+                const data = await response.json();
+                setExercisesList(data);
+            } catch (error) {
+                console.error('Error fetching exercises:', error);
+            }
+        };
+
+        // Debounce the fetch function
+        const debouncedFetch = debounce(fetchExercises, 300);
+
+        if (exercise) {
+            debouncedFetch(exercise);
+        }
+
+        return () => {
+            debouncedFetch.cancel();
+        };
+    }, [exercise]);
+
+
+    const startTraining = () => {
         const accessToken = localStorage.getItem('access_token');
 
         axios.get(Ip + '/training-start/', {
@@ -22,9 +50,11 @@ const AddTraining = () => {
         }).then(response => {
             console.log("response.data", response.data)
             setTrainingId(response.data.id)
+            setIsTrainingStarted(true);
         })
             .catch(error => console.error('Error fetching data', error));
-    }, []);
+    };
+
 
 
 
@@ -33,6 +63,16 @@ const AddTraining = () => {
 
     const handleExerciseChange = (e) => {
         setExercise(e.target.value);
+        if (e.target.value) {
+            setShowDropdown(true);
+        } else {
+            setShowDropdown(false);
+        }
+    };
+
+    const handleSelectExercise = (name) => {
+        setExercise(name);
+        setShowDropdown(false);
     };
 
     const handleEdit = (index) => {
@@ -76,6 +116,7 @@ const AddTraining = () => {
         const newSeries = series.filter((_, i) => i !== index);
         setSeries(newSeries);
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const newExerciseData = {
@@ -89,26 +130,22 @@ const AddTraining = () => {
                 'Authorization': `Bearer ${token}`
             };
 
-            let response;
+            // Dodawanie nowego ćwiczenia do istniejącego treningu
+            const response = await axios.post(`${Ip}/api/training-session/${trainingId}/add-exercise`, newExerciseData, { headers });
 
-                // Dodawanie nowego ćwiczenia do istniejącego treningu
-                // Dodawanie nowego ćwiczenia do istniejącego treningu
-                response = await axios.post(`${Ip}/api/training-session/${trainingId}/add-exercise`, newExerciseData, { headers });
-
-// Pobierz zaktualizowane dane treningu z odpowiedzi
-                const updatedExercise = response.data;
+            // Pobierz zaktualizowane dane treningu z odpowiedzi
+            // Pobierz zaktualizowane dane treningu z odpowiedzi
+            const updatedExercise = response.data;
 
 // Aktualizuj stan z nowymi danymi treningu
             const newTrainingData = { date: new Date().toISOString().slice(0, 10), exercises: [newExerciseData] };
 
             // Wykonaj żądanie dodania do serwera
-            response = await axios.post(Ip + '/api/training-session/', newTrainingData, { headers });
             setTrainingData(prevTrainingData => [...prevTrainingData, newTrainingData]);
-        
 
 
 
-        console.log(response.data);
+
 
             // Resetowanie formularza
             setExercise('');
@@ -119,41 +156,66 @@ const AddTraining = () => {
         }
     };
 
-console.log("trainingData",trainingData)
-console.log("trainingData",trainingId)
+
+    console.log(exercisesList); // Check the data structure
+    console.log(exercise); // Check the current search term
+
 
 
     return (
         <div className="mt-10 text-2xl font-semibold text-gray-800">
             <h1 className="text-center ">Nowy trening</h1>
-            <div className="container lg:w-[700px] mx-auto p-6 bg-white rounded-2xl shadow-xl transition-all">
-                {showForm ? (
-                    <form onSubmit={handleSubmit} className="mb-6">
-                        {/* Wyszukiwarka ćwiczeń */}
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="exercise">
-                                Exercise
-                            </label>
-                            <input
-                                list="exercises"
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="exercise"
-                                type="text"
-                                placeholder="e.g., Deadlift"
-                                value={exercise}
-                                onChange={handleExerciseChange}
-                                required
-                            />
-                            <datalist id="exercises">
-                                {predefinedExercises.map((ex, index) => (
-                                    <option key={index} value={ex} />
-                                ))}
-                            </datalist>
-                        </div>
+            <div className="container lg:w-[700px] mx-auto p-6 bg-white rounded-2xl shadow-xl transition-all py-20">
+                {!isTrainingStarted ? (
+                    <div className="text-center">
+                        <p className=" text-lg text-gray-600 mb-4">Kliknij poniższy przycisk, aby rozpocząć nową sesję treningową.</p>
+                        <button onClick={startTraining} className="bg-emerald-500 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded transition duration-300 mb-4 shadow-md">
+                            Rozpocznij Trening
+                        </button>
+                    </div>
+                ) : (
+                    <div>
+                        {showForm ? (
+                            <div>
+                                <p className="text-lg text-gray-600 mb-8">Wprowadź szczegóły ćwiczeń, które chcesz dodać do swojego treningu.</p>
+                                <form onSubmit={handleSubmit} className="mb-6">
+                                    {/* Wyszukiwarka ćwiczeń */}
+                                    <div className="mb-4 relative">
+                                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="exercise">
+                                            Exercise
+                                        </label>
+                                        <input
+                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                            id="exercise"
+                                            type="text"
+                                            placeholder="e.g., Deadlift"
+                                            value={exercise}
+                                            onChange={handleExerciseChange}
+                                            required
+                                        />
+                                        {/* Render Search Results */}
+                                        <div className={`search-results absolute z-10 w-full bg-white rounded mt-1 border ${showDropdown ? 'block' : 'hidden'}`}>
+                                            {exercisesList
+                                                .filter(ex => ex.name.toLowerCase().includes(exercise.toLowerCase()))
+                                                .map((filteredExercise, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="search-result-item p-2 hover:bg-gray-100 cursor-pointer"
+                                                        onClick={() => handleSelectExercise(filteredExercise.name)}
+                                                    >
+                                                        {filteredExercise.name}
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+                                    </div>
 
-                        {series.map((s, index) => (
-                            <div key={index} className="flex items-center mb-4 space-x-2">
-                                <div className="flex-1">
+
+
+
+                                    {series.map((s, index) => (
+                                        <div key={index} className="flex items-center mb-4 space-x-2">
+                                            <div className="flex-1">
                                     <input
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         type="number"
@@ -173,31 +235,37 @@ console.log("trainingData",trainingId)
                                         required
                                     />
                                 </div>
-                                {series.length > 1 && (
-                                    <button type="button" onClick={() => removeSeries(index)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                        &#x2212; {/* Minus symbol */}
-                                    </button>
-                                )}
+                                            {series.length > 1 && (
+                                                <button type="button" onClick={() => removeSeries(index)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                                    &#x2212; {/* Minus symbol */}
+                                                </button>
+                                            )}
                             </div>
                         ))}
 
-                        <div className="flex items-center justify-between mt-4">
-                            <button type="button" onClick={addSeries} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300">
-                                &#43; {/* Plus symbol */}
-                            </button>
-                            <div className="flex justify-end gap-5">
-                                <button type="button" onClick={() => {setShowForm(false); setSeries([{ weight: '', repetitions: '' }])}} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300">
-                                    Cancel
-                                </button>
-                                <button type="submit" className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300">
-                                    Submit
-                                </button>
+                                    <div className="mt-4">
+                                        <div className="mb-10 flex justify-end">
+                                            <button type="button" onClick={addSeries} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                                                &#43; {/* Plus symbol */}
+                                            </button>
+
+                                        </div>
+                                        <div className="flex justify-end gap-5">
+                                            <button type="button" onClick={() => {setShowForm(false); setSeries([{ weight: '', repetitions: '' }])}} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                                                Cancel
+                                            </button>
+                                            <button type="submit" className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                                                Submit
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </form>
                             </div>
-                        </div>
-                    </form>
                 ) : (
                     <>
 
+                        <p className="text-xl text-gray-600 mb-4">Poniżej znajduje się lista ćwiczeń w Twoim treningu. Możesz edytować lub dodawać nowe ćwiczenia.</p>
                         {/* Tabela danych treningowych z opcją edycji */}
                         <div className="overflow-x-auto rounded-lg shadow-sm font-normal text-lg">
                             <div className="space-y-6">
@@ -227,12 +295,13 @@ console.log("trainingData",trainingId)
                         </div>
 
 
-                        <button onClick={() => setShowForm(true)} className=" mt-10 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 mb-4 shadow-md">
-                            Add exercise
+                        <button onClick={() => setShowForm(true)} className="mt-10 bg-emerald-500 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded transition duration-300 mb-4 shadow-md">
+                            Dodaj ćwiczenie
                         </button>
 
                     </>
                 )}
+                    </div>)}
             </div>
         </div>
     );

@@ -122,11 +122,13 @@ console.log("orderPlaced",orderPlaced)
 
 
     return (
-        <header className="bg-white text-black p-2 shadow-md">
+        <header className="bg-white text-black shadow-md">
         <div className="container mx-auto flex justify-between items-center">
-            <Link to="/">
-                <h1 className="text-2xl font-bold font-masque">NAZWA</h1>
+            <Link to="/" class="flex items-center">
+                <img src="../logo2.png" className="w-12"/>
+                <h1 className="text-2xl font-bold font-masque ml-3l">GymEssential</h1>
             </Link>
+
             <div className="lg:hidden">
                 <button onClick={toggleMenu} className="text-black">
                     <FaBars className="text-2xl"/>
