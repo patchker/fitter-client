@@ -77,3 +77,14 @@
     margin: 4px 0;
     font-size: 14px;
 }
+
+.input-container {
+    margin-bottom: 15px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

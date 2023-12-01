@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Ip from "../../config/Ip"
 import './MealAI.css'; // Zaimportuj plik CSS
@@ -6,23 +6,47 @@ import './MealAI.css'; // Zaimportuj plik CSS
 const MealAI = () => {
     const [dietData, setDietData] = useState([]);
 
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [maxCalories, setMaxCalories] = useState('');
+    const [userWeight, setUserWeight] = useState('');
+    const [mealPerDay, setMealPerDay] = useState('');
+
+    useEffect(() => {
+        const today = new Date();
+        const inSevenDays = new Date();
+        inSevenDays.setDate(today.getDate() + 7);
+
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        setStartDate(formatDate(today));
+        setEndDate(formatDate(inSevenDays));
+        setMaxCalories(3000);
+        setMealPerDay(3);
+        setUserWeight(70);
+    }, []);
     const fetchData = async () => {
         const url = Ip+'/generate-diet'; // Adres URL do Twojego API
         const requestData = {
-            start_date: "2023-12-01",
-            end_date: "2023-12-07",
-            meals_per_day: 4,
+            start_date: startDate,
+            end_date: endDate,
+            meals_per_day: mealPerDay,
             not_preferred_ingredients: [],
-            max_calories: 4000,
+            max_calories: maxCalories,
             dietary_preferences: [],
             allergens_to_avoid: [],
-            user_weight: 60
+            user_weight: userWeight
         };
 
         try {
             const response = await axios.post(url, requestData);
             console.log(response.data); // Tutaj możesz przetworzyć odpowiedź
-            setDietData(response.data)
+            setDietData(response.data);
         } catch (error) {
             console.error('Wystąpił błąd podczas pobierania danych:', error);
         }
@@ -30,6 +54,51 @@ const MealAI = () => {
 
     return (
         <div className="diet-plan">
+            <div className="input-container">
+                <input
+                    className="input-field"
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    placeholder="Data rozpoczęcia"
+                />
+            </div>
+            <div className="input-container">
+                <input
+                    className="input-field"
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    placeholder="Data zakończenia"
+                />
+            </div>
+            <div className="input-container">
+                <input
+                    className="input-field"
+                    type="number"
+                    value={maxCalories}
+                    onChange={(e) => setMaxCalories(e.target.value)}
+                    placeholder="Maksymalna liczba kalorii"
+                />
+            </div>
+            <div className="input-container">
+                <input
+                    className="input-field"
+                    type="number"
+                    value={userWeight}
+                    onChange={(e) => setUserWeight(e.target.value)}
+                    placeholder="Waga użytkownika"
+                />
+            </div>
+            <div className="input-container">
+                <input
+                    className="input-field"
+                    type="number"
+                    value={mealPerDay}
+                    onChange={(e) => setMealPerDay(e.target.value)}
+                    placeholder="Liczba posiłków"
+                />
+            </div>
             <button onClick={fetchData} className="fetch-button">Pobierz Plan Diety</button>
             <div className="days-container">
                 {dietData.map((day, index) => (
