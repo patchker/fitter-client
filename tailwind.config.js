@@ -10,6 +10,8 @@ module.exports = {
         'masque': ['Masque', 'sans-serif'], // Zaktualizuj nazwę rodziny czcionek, aby odpowiadała nazwie używanej w definicji @font-face
         'poppins': ['Poppins', 'sans-serif'], // Zaktualizuj nazwę rodziny czcionek, aby odpowiadała nazwie używanej w definicji @font-face
         'protector': ['Protector', 'sans-serif'], // Zaktualizuj nazwę rodziny czcionek, aby odpowiadała nazwie używanej w definicji @font-face
+        'potta': ['Potta', 'sans-serif'], // Zaktualizuj nazwę rodziny czcionek, aby odpowiadała nazwie używanej w definicji @font-face
+        'bungee': ['Bungee', 'sans-serif'], // Zaktualizuj nazwę rodziny czcionek, aby odpowiadała nazwie używanej w definicji @font-face
 
       }
     }

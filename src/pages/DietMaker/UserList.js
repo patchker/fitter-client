@@ -30,7 +30,12 @@ const UserList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 20;
     const { logout } = useAuth();
+    const [orderStatusFilter, setOrderStatusFilter] = useState(''); // Dodatkowy stan dla filtra
+    const [isSelectOpen, setIsSelectOpen] = useState(false);
 
+    const handleFilterChange = (event) => {
+        setOrderStatusFilter(event.target.value);
+    };
     const handleRowClick = (userId, username) => {
         navigate(`/dietmaker/${userId || username}`);
     };
@@ -38,11 +43,20 @@ const UserList = () => {
         const fetchData = async () => {
             try {
                 const accessToken = localStorage.getItem('access_token');
-                const response = await axios.get(ip+'/api/users/', {
+                const params = {
+                    search: searchTerm,
+                    page: currentPage
+                };
+
+                if (orderStatusFilter) {
+                    params.orderStatus = orderStatusFilter; // Dodaj filtr statusu zamówienia do parametrów
+                }
+
+                const response = await axios.get(ip + '/api/users/', {
                     headers: {
                         'Authorization': `Bearer ${accessToken}`
                     },
-                    params: { search: searchTerm, page: currentPage }
+                    params: params
                 });
                 setUsers(response.data);
             } catch (error) {
@@ -54,7 +68,8 @@ const UserList = () => {
             }
         };
         fetchData();
-    }, [searchTerm, currentPage]);
+    }, [searchTerm, currentPage, orderStatusFilter]);
+
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
@@ -74,7 +89,22 @@ const UserList = () => {
                 <thead>
                 <tr>
                     <th className="py-2 px-4 border-b border-gray-200">Username</th>
-                    <th className="py-2 px-4 border-b border-gray-200">Order Status</th>
+                    <th className="py-2 px-4 border-b border-gray-200">
+                        {/* Rozwijana lista wewnątrz nagłówka */}
+                        <select
+                            value={orderStatusFilter}
+                            onChange={handleFilterChange}
+                            className="p-2 border border-gray-300 rounded"
+                            onFocus={() => setIsSelectOpen(true)}
+                            onBlur={() => setIsSelectOpen(false)}
+                        >
+                            <option value="">{isSelectOpen ? "Wszystkie" : "Status"}</option>
+                            <option value="Active">Aktywne</option>
+                            <option value="Completed">Zakończone</option>
+                            <option value="Pending">Oczekujące</option>
+                        </select>
+
+                    </th>
                     <th className="py-2 px-4 border-b border-gray-200">Order Duration</th>
                     <th className="py-2 px-4 border-b border-gray-200">Order Creation Time</th>
                 </tr>

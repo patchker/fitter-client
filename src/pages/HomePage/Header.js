@@ -8,7 +8,7 @@ import { usePayment } from '../../contexts/PaymentContext';
 import { OrderPlacedContext } from '../../contexts/orderPlacedContext';
 
 function Header() {
-    const {currentUser, setCurrentUser, logout} = useAuth();
+    const {currentUser, setCurrentUser, logout, currentRole, setCurrentRole} = useAuth();
     const [isMenuVisible, setIsMenuVisible] = useState(false);
     const navigate = useNavigate()
     const location = useLocation();
@@ -19,6 +19,7 @@ function Header() {
     const [isLoading, setIsLoading] = useState(false);
     const { orderPlaced, setOrderPlaced } = useContext(OrderPlacedContext);
 
+    console.log("AAAAA",currentRole)
     useEffect(() => {
         console.log("ORder placed");
         if(orderPlaced)
@@ -104,7 +105,6 @@ console.log("orderPlaced",orderPlaced)
     }, [currentUser, fetch]);
 
 
-
     const handleMouseEnter = () => {
         setIsMenuVisible(true);
     };
@@ -126,7 +126,7 @@ console.log("orderPlaced",orderPlaced)
         <div className="container mx-auto flex justify-between items-center">
             <Link to="/" class="flex items-center">
                 <img src="../logo2.png" className="w-12"/>
-                <h1 className="text-2xl font-bold font-masque ml-3l">GymEssential</h1>
+                <h1 className="text-2xl font-bold font-masque ml-3l">Nazwa</h1>
             </Link>
 
             <div className="lg:hidden">
@@ -148,10 +148,17 @@ console.log("orderPlaced",orderPlaced)
                             </Link>
                         )}
                     </li>
-                    <li className=" border-b-2 sm:border-b-2 lg:border-0 py-2"><Link to="/userlist"
-                                                                                     className="hover:underline"
-                                                                                     onClick={() => setIsMenuOpen(false)}>DietaMaker</Link>
-                    </li>
+
+                    {currentRole && currentRole.includes("Dietetyk") &&
+                        <li className=" border-b-2 sm:border-b-2 lg:border-0 py-2">
+                            <Link to="/userlist" className="hover:underline" onClick={() => setIsMenuOpen(false)}>
+                                DietaMaker
+                            </Link>
+                        </li>
+                    }
+
+
+
                     <li className="  border-b-2 sm:border-b-2 lg:border-0 py-2"><Link to="/body"
                                                                                       className="hover:underline"
                                                                                       onClick={() => setIsMenuOpen(false)}>Ciało</Link></li>

@@ -37,3 +37,15 @@ code {
   font-weight: normal;
   font-style: normal;
 }
+@font-face {
+  font-family: 'Potta'; /* Nazwa, która będzie używana w konfiguracji TailwindCSS i w komponentach React */
+  src: url('../public/PottaOne-Regular.ttf') format('truetype'); /* Ścieżka do pliku czcionki; upewnij się, że jest poprawna */
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Bungee'; /* Nazwa, która będzie używana w konfiguracji TailwindCSS i w komponentach React */
+  src: url('../public/Bungee-Regular.ttf') format('truetype'); /* Ścieżka do pliku czcionki; upewnij się, że jest poprawna */
+  font-weight: normal;
+  font-style: normal;
+}

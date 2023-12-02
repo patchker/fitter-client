@@ -21,6 +21,7 @@ import PurchaseDiet from "./pages/Dieta/PurchaseDiet";
 import SuccessPage from "./pages/Payment/SuccessPage";
 import PaymentPage from "./pages/Payment/PaymentPage";
 import { PaymentProvider } from './contexts/PaymentContext';
+import { AuthProvider } from './contexts/AuthContext';
 import OrderList from "./pages/DietMaker/OrderList";
 import DietCalendar from "./pages/DietCalendar/DietCalendar";
 import withAuthProtection from "./config/withAuthProtection";
@@ -36,6 +37,7 @@ import AddMeasurement from './pages/Body/components/AddMeasurement';
 import Trainings from './pages/Body/components/Trainings';
 import Ingredients from "./pages/DietCalendar/components/Ingredients";
 import MealAI from "./pages/DietCalendar/MealAI";
+import Confirm from './pages/Register/Confirm'; // Zaimportuj swój komponent weryfikacji
 
 import { TrainingProvider } from './contexts/TrainingContext';
 
@@ -91,6 +93,7 @@ function App() {
             <Route path="/addtraining" element={<ProtectedAddTraining />} />
               <Route path="/trainings" element={<ProtectedTrainings />} />
 
+            <Route path="/verify/:token" element={<Confirm/>} />
 
             <Route path="/addmeasurement" element={<ProtectedAddMeasurement />} />
             <Route path="/body/measurements" element={<ProtectedActualMeasurements />} />

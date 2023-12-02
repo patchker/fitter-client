@@ -8,17 +8,9 @@ const Trainings = () => {
     const { trainings, fetchTrainings } = useTrainings();
 
 
-
-
     useEffect(() => {
-
         fetchTrainings();
     }, []);
-
-
-    useEffect(() => {
-        fetchTrainings();
-    }, [fetchTrainings]);
 
 
 

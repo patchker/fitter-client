@@ -657,7 +657,7 @@ function DietMaker() {
                     </div>
 
                     {/* Sekcja wyszukiwania */}
-                    <div className="ml-10 md:w-1/4 mt-2">
+                    <div className="ml-10 md:w-1/3 lg:w-1/4 mt-2">
                         <input
                             type="text"
                             placeholder="Szukaj posiłków..."

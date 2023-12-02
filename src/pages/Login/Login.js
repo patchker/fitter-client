@@ -11,12 +11,15 @@ function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const {setCurrentUser} = useAuth();
+    const {setCurrentUser, setCurrentRole} = useAuth();
     const [showTooltip, setShowTooltip] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
     const [showLogin, setShowLogin] = useState(true);
+    const [verificationError, setVerificationError] = useState('');
+
     const navigate = useNavigate()
     const location = useLocation();
+    console.log("showRegister",showRegister)
     const handleBackClick = () => {
         setShowLogin(true);
         setTimeout(() => {
@@ -42,6 +45,25 @@ function Login() {
         }
     }, [location]);
 
+    const resendVerificationEmail = async () => {
+        try {
+            console.log(username)
+            await axios.post(ip + '/resend-verification-email/', {username},);
+            alert('E-mail weryfikacyjny został ponownie wysłany.');
+        } catch (error) {
+            alert('Wystąpił błąd podczas wysyłania e-maila.');
+        }
+    };
+
+
+
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setVerificationError(false);
+        }, 10000);
+        return () => clearTimeout(timer);
+    }, [verificationError]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -50,15 +72,28 @@ function Login() {
                 username,
                 password
             });
+            console.log("SASASASASA",response.data)
             if (response.data.access) {
+                console.log("response.data",response.data)
                 localStorage.setItem('access_token', response.data.access);
+                localStorage.setItem('roles', JSON.stringify(response.data.roles));
+                console.log("response.data.roles",response.data.roles)
+                setCurrentRole(JSON.stringify(response.data.roles))
                 setCurrentUser(username);
                 navigate('/dashboard?logged=true')
             }
         } catch (err) {
-            setError("Nieprawidłowa nazwa użytkownika lub hasło.");
+            if (err.response && err.response.status === 401) {
+                // Błąd weryfikacji konta
+                setVerificationError(err.response.data.detail);
+                console.log("err.response.data.detail",err.response.data.detail)
+            } else {
+                // Inne błędy
+                setError("Nieprawidłowa nazwa użytkownika lub hasło.");
+            }
         }
     };
+
 
 
     return (
@@ -118,25 +153,25 @@ function Login() {
                                         Zaloguj
                                     </button>
                                 </div>
-                                {/* Przycisk rejestracji */}
-                                <div className="mt-4 md:absolute md:right-0 md:top- md:transform md:-translate-y-1/2 lg:right-[-250px] lg:top-[250px]">
-                                    <button
-                                        onClick={handleRegisterClick}
-                                        className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center lg:px-8 lg:py-4 lg:rounded-lg"
-                                    >
-                                        <span className="mr-2">Rejestracja</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
-                                             viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                                  d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                                        </svg>
-                                    </button>
 
-                                </div>
 
                             </form>
 
+                            {/* Przycisk rejestracji */}
+                            <div className="mt-4 md:absolute md:right-0 md:top- md:transform md:-translate-y-1/2 lg:right-[-250px] lg:top-[250px]">
+                                <button
+                                    onClick={handleRegisterClick}
+                                    className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center lg:px-8 lg:py-4 lg:rounded-lg"
+                                >
+                                    <span className="mr-2">Rejestracja</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
+                                         viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                              d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                                    </svg>
+                                </button>
 
+                            </div>
                         </div>
                     </motion.div>
                 )}
@@ -158,6 +193,33 @@ function Login() {
                         <Register handleBackClick={handleBackClick}/>
                     </motion.div>
                 )}
+                {
+                    verificationError ? (
+                        verificationError === "E-mail niezweryfikowany" ? (
+                            // Blok dla specyficznego błędu "E-mail niezweryfikowany"
+                            <div className="fixed top-10 right-0 p-4">
+                                <div className="bg-yellow-500 text-black p-4 rounded-xl shadow-lg flex items-center">
+                                    <p>{verificationError} - </p>
+                                    <button className="ml-2 text-emerald-500" onClick={() => resendVerificationEmail()}> Wyślij ponownie</button>
+                                    <button onClick={() => setVerificationError(null)} className="ml-4 text-xl">×</button>
+                                </div>
+                            </div>
+                        ) : (
+                            // Blok dla innych błędów niż "E-mail niezweryfikowany"
+                            <div className="fixed top-10 right-0 p-4">
+                                <div className="bg-yellow-500 text-white p-4 rounded-xl shadow-lg flex items-center">
+                                    <p>{verificationError}</p>
+                                    <button onClick={() => setVerificationError(null)} className="ml-4 text-xl">×</button>
+                                </div>
+                            </div>
+                        )
+                    ) : null
+                }
+
+
+
+
+
 
 
             </div>

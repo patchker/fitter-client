@@ -65,6 +65,7 @@ function Register(props) {
         }
 
     };
+    console.log("ENTERINGGGGG")
 
     return (
 

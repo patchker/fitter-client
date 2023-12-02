@@ -22,6 +22,7 @@ function Banner() {
     const bottomTextVariants = {
         hidden: { ...sharedStartPosition, scale: 0.8 },
         visible: animate ? { opacity: 1, x: '-5vw', y: '10vh', scale: 1.2, transition: { type: 'spring', stiffness: 120, damping: 14, delay: 0.15 } } : { ...sharedStartPosition, scale: 0.8 }
+
     };
 
     const middleTextVariants = {
@@ -49,31 +50,31 @@ function Banner() {
 
             <motion.div className="absolute top-[20vh] right-[20vw]">
                 <motion.h1
-                    className="absolute text-[2vw] whiteText font-masque font-bold"
+                    className="absolute text-[2vw] whiteText font-bungee font-bold"
                     style={{ top: '50%', left: '50%', translateX: '-50%', translateY: '-50%' }} // Wspólna pozycja startowa
                     variants={topTextVariants}
                     initial="hidden"
                     animate="visible"
                 >
-                    Test
+                    Odkryj
                 </motion.h1>
                 <motion.h1
-                    className="absolute text-[4vw] outlinedText font-masque font-bold"
+                    className="absolute text-[4vw] outlinedText font-bungee font-bold"
                     style={{ top: '50%', left: '50%', translateX: '-50%', translateY: '-50%' }} // Wspólna pozycja startowa
                     variants={middleTextVariants}
                     initial="hidden"
                     animate="visible"
                 >
-                    Test
+                    swoją
                 </motion.h1>
                 <motion.h1
-                    className="absolute text-[5vw] blackText font-masque font-bold"
+                    className="absolute text-[5vw] blackText font-bungee font-bold"
                     style={{ top: '50%', left: '50%', translateX: '-50%', translateY: '-50%' }} // Wspólna pozycja startowa
                     variants={bottomTextVariants}
                     initial="hidden"
                     animate="visible"
                 >
-                    Test!
+                    siłę!
                 </motion.h1>
             </motion.div>
 

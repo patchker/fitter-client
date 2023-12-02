@@ -52,6 +52,25 @@ const MealAI = () => {
         }
     };
 
+
+
+    const fetchData2 = async () => {
+        const token = localStorage.getItem("access_token");
+        const url = Ip+'/mealAI/';
+        const headers = {
+            'Authorization': `Bearer ${token}`
+        };
+
+        try {
+            const response = await axios.post(url, {}, { headers }); // Pusty obiekt jako ciało żądania
+            console.log(response.data);
+        } catch (error) {
+            console.error('Wystąpił błąd:', error);
+        }
+    };
+
+
+
     return (
         <div className="diet-plan">
             <div className="input-container">
@@ -100,6 +119,7 @@ const MealAI = () => {
                 />
             </div>
             <button onClick={fetchData} className="fetch-button">Pobierz Plan Diety</button>
+            <button onClick={fetchData2} className="fetch-button">Pobierz Plan Diety2</button>
             <div className="days-container">
                 {dietData.map((day, index) => (
                     <div key={index} className="day">

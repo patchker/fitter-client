@@ -118,7 +118,7 @@ function DraggableMeal({meal, mealType, onDragStart, onDragEnd, onDoubleClick}) 
     return (
         <div ref={drag}
              className={`rounded border-2 ${isDragging ? 'opacity-50 bg-gray-300' : 'opacity-100 bg-gray-100'} mb-2 cursor-pointer`}>
-            <div className="flex justify-between items-center w-full h-10 ">
+            <div className="flex justify-between items-center w-full min-h-[50px]">
                 <div className="flex-1 flex justify-center items-center">
                     <h4 className="text-center">{meal.name}</h4>
                 </div>

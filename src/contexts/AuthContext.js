@@ -26,24 +26,37 @@ export const verifyToken = async () => {
 };
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
+    const [currentRole, setCurrentRole] = useState(null);
     const [userData, setUserData] = useState(null); // nowy stan dla dodatkowych danych użytkownika
 
+        console.log("currentRole",currentRole)
     const logout = () => {
         localStorage.removeItem('currentUser');
         localStorage.removeItem('access_token');
+        localStorage.removeItem('userData');
+        localStorage.removeItem('currentRole');
         setCurrentUser(null);
     };
 
     useEffect(() => {
         const user = localStorage.getItem('currentUser');
+        const roleFromStorage = localStorage.getItem('roles');
+
         if (user) {
             setCurrentUser(JSON.parse(user));
+
+
+        }
+       if (roleFromStorage) {
+            setCurrentRole(JSON.parse(roleFromStorage));
         }
 
         const userDataFromStorage = localStorage.getItem('userData');
         if (userDataFromStorage) {
             setUserData(JSON.parse(userDataFromStorage)); // ustaw userData z localStorage
         }
+
+
     }, []);
 
     const value = {
@@ -59,10 +72,17 @@ export const AuthProvider = ({ children }) => {
         },
         logout: () => {
             localStorage.removeItem('currentUser');
-            localStorage.removeItem('userData'); // usuń także userData
+            localStorage.removeItem('userData');
             localStorage.removeItem('access_token');
+            localStorage.removeItem('currentRole');
             setCurrentUser(null);
             setUserData(null); // zresetuj także userData
+            setCurrentRole(null); // zresetuj także userData
+        },
+        currentRole, // udostępnij userData jako część wartości kontekstu
+        setCurrentRole: (role) => {
+            localStorage.setItem('currentRole', JSON.stringify(role)); // zapisz userData w localStorage
+            setCurrentRole(role);
         },
     };
 
