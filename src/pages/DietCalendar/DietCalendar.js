@@ -169,7 +169,7 @@ function DietSchedule() {
         const endDate = formatDate(new Date(currentWeekStart).setDate(currentWeekStart.getDate() + 6));
         const accessToken = localStorage.getItem('access_token');
 
-        axios.get(ip + '/diet-plans/', {
+        axios.get(ip + '/api/diet-plans/', {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
@@ -306,7 +306,7 @@ function DietSchedule() {
 
     return (
                <div className="flex flex-col items-center p-4 mt-8">
-            <div className="flex flex-col md:flex-row w-full justify-between items-center mb-4">
+            <div className="flex flex-col md:flex-row w-full  justify-between items-center mb-4">
                 <h1 className="text-3xl font-bold text-center mb-4 md:mb-0 md:mr-4">Twój plan diety na ten tydzień</h1>
 
                 <button onClick={handleNavigate}
@@ -329,7 +329,7 @@ Lista składników
             />
 
 
-            <div className={`grid ${getGridTemplateColumns()} gap-4 w-full mt-8 ${animationClass}`}>                {days.map((day, index) => {
+            <div className={`grid ${getGridTemplateColumns()} gap-4 w-full h-auto mt-8 ${animationClass}`}>                {days.map((day, index) => {
                     const dayDate = new Date(new Date(currentWeekStart).setDate(currentWeekStart.getDate() + index));
                     if (isWithinOrderDate(dayDate)) {
                         return (

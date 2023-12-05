@@ -146,7 +146,7 @@ function DietMaker() {
     const saveDietData = (allDietData) => {
         const accessToken = localStorage.getItem('access_token');
         console.log("allDietData", allDietData)
-        axios.post(ip + "/save_diet_data/", {
+        axios.post(ip + "/api/save_diet_data/", {
             userNick: nick,
             diet_data: allDietData,
             status:dietPlanInfo.status
@@ -180,7 +180,7 @@ function DietMaker() {
 
     useEffect(() => {
         if (searchTerm) {
-            axios.get(ip + `/search_meals/`, {
+            axios.get(ip + `/api/search_meals/`, {
                 params: {
                     query: searchTerm
                 }
@@ -359,7 +359,7 @@ function DietMaker() {
         const accessToken = localStorage.getItem('access_token');
         console.log("OD", startDate)
         console.log("DO", endDate)
-        axios.get(ip + '/dietix/', {
+        axios.get(ip + '/api/dietix/', {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },

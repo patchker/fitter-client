@@ -8,7 +8,7 @@ function SuccessPage() {
             <p className="text-lg mb-6 text-center">Dziękujemy za zakup. Twoja płatność została pomyślnie
                 przetworzona.</p>
             <Link
-                to="/"
+                to="/dietcalendar"
                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full">
                 Wróć na stronę główną
             </Link>

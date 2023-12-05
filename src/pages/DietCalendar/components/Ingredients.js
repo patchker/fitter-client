@@ -27,7 +27,7 @@ function Ingredients() {
         const endDate = formatDate(new Date(currentWeekStart).setDate(currentWeekStart.getDate() + 6));
         const accessToken = localStorage.getItem('access_token');
 
-        axios.get(`${ip}/diet-ingredients/${startDate}/${endDate}/`, {
+        axios.get(`${ip}/api/diet-ingredients/${startDate}/${endDate}/`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }

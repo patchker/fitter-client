@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import './Confirm.css'; // Zaimportuj plik CSS dla tego komponentu
+import './Confirm.css';
+import ip from "../../config/Ip"; // Zaimportuj plik CSS dla tego komponentu
 
 function Confirm() {
     const [statusMessage, setStatusMessage] = useState('');
@@ -10,7 +11,7 @@ function Confirm() {
     useEffect(() => {
         const verifyEmail = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/verify/${token}`);
+                const response = await axios.get(ip+`/api/verify/${token}`);
                 setStatusMessage(response.data.message);
             } catch (error) {
                 setStatusMessage(

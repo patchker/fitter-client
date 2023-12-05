@@ -107,14 +107,16 @@ const DietConfigurator = ({ onSubmit }) => {
     };
 
 
+
     const handleSubmit = (event) => {
 
         console.log("preferences:",preferences)
         console.log("footPreferences:",foodPreferences)
         event.preventDefault();
-        const accessToken = localStorage.getItem('access_token'); // Powinieneś zdobyć token w jakiś sposób
-        const apiEndpoint = Ip+'/api/diet-preferences/'; // Tutaj zmień na odpowiedni endpoint
+        const accessToken = localStorage.getItem('access_token');
+        const apiEndpoint = Ip+'/api/diet-preferences/';
         const diet_id=state.orderInfo.dieta
+        console.log("WWWWWWWWWWWW", mealCount)
         axios.post(apiEndpoint, {
             diet_id,
             diet_type,

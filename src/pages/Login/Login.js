@@ -27,7 +27,9 @@ function Login() {
         }, 300);
     };
 
-    const handleRegisterClick = () => {
+    const handleRegisterClick = (event) => {
+        event.preventDefault();
+
         setShowRegister(true);
         setTimeout(() => {
             setShowLogin(false);
@@ -48,7 +50,7 @@ function Login() {
     const resendVerificationEmail = async () => {
         try {
             console.log(username)
-            await axios.post(ip + '/resend-verification-email/', {username},);
+            await axios.post(ip + '/api/resend-verification-email/', {username},);
             alert('E-mail weryfikacyjny został ponownie wysłany.');
         } catch (error) {
             alert('Wystąpił błąd podczas wysyłania e-maila.');
@@ -97,8 +99,8 @@ function Login() {
 
 
     return (
-        <div className="flex flex-col items-center h-screen mb-32">
-            <div className="relative w-[500px] ">
+        <div className="flex flex-col items-center h-screen mb-36">
+            <div className="relative w-full  max-w-[500px]">
                 {showLogin && (
                     <motion.div
                         className="absolute w-full mt-20"
@@ -110,8 +112,8 @@ function Login() {
                             {showTooltip && (
                                 <div className="fixed top-20 right-0 p-4">
                                     <div
-                                        className="bg-green-500 text-white p-4 rounded-3xl shadow-lg flex items-center">
-                                        <p>Pomyślnie zarejestrowano! Możesz się teraz zalogować.</p>
+                                        className="bg-yellow-500 text-white p-4 rounded-3xl shadow-lg flex items-center">
+                                        <p>Pomyślnie zarejestrowano! Potwierdź email aby się zalogować.</p>
                                         <button onClick={() => setShowTooltip(false)} className="ml-4 text-xl">×
                                         </button>
                                     </div>
@@ -119,7 +121,7 @@ function Login() {
                             )}
 
                             <form onSubmit={handleSubmit}
-                                  className="shadow-2xl rounded-3xl px-4 pt-6 pb-8 mb-4 bg-white h-[500px]">
+                                  className="shadow-2xl rounded-3xl px-4 pt-6 pb-8 mb-4 bg-white h-[550px]">
 
                                 <div className="font-masque text-5xl mb-20">NAZWA</div>
                                 <div className=" text-xl mb-8">Zaloguj się za pomocą swoich danych</div>
@@ -154,24 +156,26 @@ function Login() {
                                     </button>
                                 </div>
 
+                                {/* Przycisk rejestracji */}
+                                <div className="mt-5 flex items-center justify-center m-auto m-0 sm:absolute  right-[170px] top-[430px] sm:right-[170px] sm:top-[450px] md:right-[170px] md:top-[450px] sm:transform sm:-translate-y-1/2 lg:right-[-250px] lg:top-[200px]">
+                                    <button
+                                        type="button"
 
+                                        onClick={handleRegisterClick}
+                                        className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center lg:px-8 lg:py-4 lg:rounded-lg"
+                                    >
+                                        <span className="mr-2">Rejestracja</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
+                                             viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                                  d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                                        </svg>
+                                    </button>
+
+                                </div>
                             </form>
 
-                            {/* Przycisk rejestracji */}
-                            <div className="mt-4 md:absolute md:right-0 md:top- md:transform md:-translate-y-1/2 lg:right-[-250px] lg:top-[250px]">
-                                <button
-                                    onClick={handleRegisterClick}
-                                    className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center lg:px-8 lg:py-4 lg:rounded-lg"
-                                >
-                                    <span className="mr-2">Rejestracja</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
-                                         viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                              d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                                    </svg>
-                                </button>
 
-                            </div>
                         </div>
                     </motion.div>
                 )}

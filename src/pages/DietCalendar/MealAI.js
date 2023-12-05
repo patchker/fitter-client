@@ -56,7 +56,7 @@ const MealAI = () => {
 
     const fetchData2 = async () => {
         const token = localStorage.getItem("access_token");
-        const url = Ip+'/mealAI/';
+        const url = Ip+'/api/mealAI/';
         const headers = {
             'Authorization': `Bearer ${token}`
         };

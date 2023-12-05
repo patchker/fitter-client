@@ -72,7 +72,7 @@ function Register(props) {
         <div className="w-full mt-10 bg-white shadow-2xl rounded-3xl">
             <div className="font-masque text-5xl pt-5">Nazwa</div>
             <div className="mt-10">Dołącz do nas</div>
-            <form onSubmit={handleSubmit} className=" rounded px-8 pt-6 pb-8 mb-4">
+            <form onSubmit={handleSubmit} className=" rounded px-8 pt-6 mb-4">
 
                 {/* First Name */}
                 <div className="mb-4">
@@ -152,7 +152,7 @@ function Register(props) {
                 </div>
             </form>
 
-
+            {/*
             <button
                 onClick={props.handleBackClick}
                 className="absolute top-80 left-[-50px]  transform -translate-y-1/2 -translate-x-full bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded flex items-center"
@@ -167,6 +167,21 @@ function Register(props) {
 
                 </div>
             </button>
+*/}
+            <div className="mt-4 pb-10 flex justify-center items-center m-auto mt-0  sm:absolute top-[740px] right-[170px] sm:right-[170px] sm:top-[740px] md:right-[175px] md:top-[740px] sm:transform sm:-translate-y-1/2 lg:left-[-700px] lg:top-[350px] ">
+                <button
+                    onClick={props.handleBackClick}
+                    className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center lg:px-8 lg:py-4 lg:rounded-lg"
+                >
+                    <span className="mr-2">Logowanie</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                              d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                </button>
+
+            </div>
 
 
         </div>

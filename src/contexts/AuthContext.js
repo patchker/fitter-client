@@ -36,6 +36,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('userData');
         localStorage.removeItem('currentRole');
         setCurrentUser(null);
+        setCurrentRole(null);
     };
 
     useEffect(() => {

@@ -14,7 +14,7 @@ function Content() {
     const fetchOrders = async (userToken) => {
         console.log("Fetching orders")
         try {
-            const response = await axios.get(ip + '/user_orders/', {
+            const response = await axios.get(ip + '/api/user_orders/', {
                 headers: {
                     'Authorization': `Bearer ${userToken}`
                 }
@@ -69,23 +69,20 @@ function Content() {
     };
 
     return (
-        <div className="flex flex-col justify-center items-center  m-auto border-2 bg-slate-50 border-gray-50 p-6 space-y-6 shadow-md pb-40 mt-28">
-            <div className="bg-gray-200 p-4 rounded-[150px] shadow-sm space-y-6 p-16">
+        <div className="flex flex-col justify-center items-center m-auto border-2 bg-slate-50 border-gray-50 p-6 space-y-6 shadow-md pb-10 mt-10">
+            <div className="bg-gray-200 p-8 rounded-[50px] shadow-sm space-y-4">
                 <h2 className="text-2xl font-semibold text-center text-gray-800">Twoja Droga do Zdrowszego Życia</h2>
-
                 <p className="text-lg text-gray-700 text-center">Poznaj nasze narzędzia</p>
-                <p className="text-base text-gray-600 text-center">Śledź swoje postępy i osiągaj cele zdrowotne z naszymi spersonalizowanymi planami.</p>
+                <p className="text-sm text-gray-600 text-center">Śledź swoje postępy i osiągaj cele zdrowotne z naszymi spersonalizowanymi planami.</p>
                 {isLoading ? <span>Loading...</span> : (
                     <button
-                        className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 text-center transition-colors duration-200 w-72 h-16 rounded-[20px]"
+                        className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 text-center transition-colors duration-200 w-72 h-12 rounded-md"
                         onClick={handleButtonClick}
                     >
                         Przejdź do Diety
                     </button>
-                    )}
-
-
-                <ul className="list-disc list-inside text-gray-600 text-center list-none">
+                )}
+                <ul className="list-disc list-inside text-gray-600 text-left">
                     <li>Zdrowe przepisy</li>
                     <li>Personalizowane plany żywieniowe</li>
                     <li>Wsparcie społeczności</li>

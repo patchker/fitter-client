@@ -3,9 +3,11 @@ import React, {useState, useEffect, useRef, useContext} from 'react';
 import {useLocation, Link, useNavigate} from 'react-router-dom';
 import axios from "axios";
 import ip from '../../config/Ip'
-import {FaBars} from "react-icons/fa";
-import { usePayment } from '../../contexts/PaymentContext';
-import { OrderPlacedContext } from '../../contexts/orderPlacedContext';
+import {FaBars, FaWindowClose} from "react-icons/fa";
+import {FaXmark} from "react-icons/fa6";
+
+import {usePayment} from '../../contexts/PaymentContext';
+import {OrderPlacedContext} from '../../contexts/orderPlacedContext';
 
 function Header() {
     const {currentUser, setCurrentUser, logout, currentRole, setCurrentRole} = useAuth();
@@ -17,30 +19,29 @@ function Header() {
     const menuRef = useRef();
     const [fetch, setFetch] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const { orderPlaced, setOrderPlaced } = useContext(OrderPlacedContext);
+    const {orderPlaced, setOrderPlaced} = useContext(OrderPlacedContext);
 
-    console.log("AAAAA",currentRole)
+    console.log("AAAAA", currentRole)
     useEffect(() => {
         console.log("ORder placed");
-        if(orderPlaced)
-        {
+        if (orderPlaced) {
             setDietPath("/dietcalendar");
 
-        }else{
+        } else {
             setDietPath("/dieta");
 
         }
 
     }, [orderPlaced]);
 
-console.log("orderPlaced",orderPlaced)
+    console.log("orderPlaced", orderPlaced)
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
     const fetchOrders = async (userToken) => {
         console.log("Fetching orders")
         try {
-            const response = await axios.get(ip + '/user_orders/', {
+            const response = await axios.get(ip + '/api/user_orders/', {
                 headers: {
                     'Authorization': `Bearer ${userToken}`
                 }
@@ -72,9 +73,6 @@ console.log("orderPlaced",orderPlaced)
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [menuRef]);
-
-
-
 
 
     useEffect(() => {
@@ -123,78 +121,84 @@ console.log("orderPlaced",orderPlaced)
 
     return (
         <header className="bg-white text-black shadow-md">
-        <div className="container mx-auto flex justify-between items-center">
-            <Link to="/" class="flex items-center">
-                <img src="../logo2.png" className="w-12"/>
-                <h1 className="text-2xl font-bold font-masque ml-3l">Nazwa</h1>
-            </Link>
+            <div className="container mx-auto flex justify-between items-center">
+                <Link to="/" class="flex items-center">
+                    <img src="../logo2.png" className="w-12"/>
+                    <h1 className="text-2xl font-bold font-masque ml-3l">Nazwa</h1>
+                </Link>
 
-            <div className="lg:hidden">
-                <button onClick={toggleMenu} className="text-black">
-                    <FaBars className="text-2xl"/>
-                </button>
-            </div>
-            <nav ref={menuRef}
-                 className={`fixed right-0 top-0 h-full bg-white z-50 transform ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out w-60 border-l-2 lg:w-auto lg:translate-x-0 lg:relative lg:flex lg:border-0`}>
-                <ul className={`flex flex-col lg:space-y-0 lg:flex-row lg:space-x-4 py-8 lg:py-0 ${isMenuOpen && 'mt-10'}`}>
-                    <li className=" border-b-2 sm:border-b-2 lg:border-0 py-2">
+                <div className="lg:hidden mr-5">
+                    <button onClick={toggleMenu} className="text-black">
+                        <FaBars className="text-2xl"/>
+                    </button>
+                </div>
+                <nav ref={menuRef}
+                     className={`fixed right-0 top-0 h-full bg-white z-50 transform ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out w-60 border-l-2 lg:w-auto lg:translate-x-0 lg:relative lg:flex lg:border-0`}>
+                    <ul className={`flex flex-col lg:space-y-0  lg:flex-row lg:space-x-4 py-8 lg:py-0 ${isMenuOpen && 'mt-10'}`}>
                         {isLoading ? <span>Loading...</span> : (
                             <Link
                                 to={dietPath}
                                 className="hover:underline"
                                 onClick={() => setIsMenuOpen(false)}
                             >
-                                Dieta
+                                <li className={` border-b-2 sm:border-b-2 lg:border-0 py-2 ${isMenuOpen && 'bg-gray-300 rounded m-1'}`}>
+
+                                    Dieta
+
+                                </li>
                             </Link>
                         )}
-                    </li>
-
-                    {currentRole && currentRole.includes("Dietetyk") &&
-                        <li className=" border-b-2 sm:border-b-2 lg:border-0 py-2">
+                        {currentRole && currentRole.includes("Dietetyk") &&
                             <Link to="/userlist" className="hover:underline" onClick={() => setIsMenuOpen(false)}>
-                                DietaMaker
+
+                                <li className={` border-b-2 sm:border-b-2 lg:border-0 py-2 ${isMenuOpen && 'bg-gray-300 rounded m-1'} `}>
+                                    DietaMaker
+                                </li>
                             </Link>
+
+                        }
+
+                        <Link to="/body"
+                              className="hover:underline"
+                              onClick={() => setIsMenuOpen(false)}>
+                            <li className={`  border-b-2 sm:border-b-2 lg:border-0 py-2 ${isMenuOpen && 'bg-gray-300 rounded m-1'}`}>
+                                Ciało
+                            </li>
+                        </Link>
+
+                        <li className={`border-b-2 sm:border-b-2 lg:border-0 py-2 ${isMenuOpen && 'bg-gray-300 rounded m-1'}`}>
+                            <div className={` ${isMenuOpen ? 'ml-0' : 'ml-10'} min-w-[120px]  `}
+                                 onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                                {currentUser ? (<div className="relative">
+                                    <div> <span
+                                        className="cursor-pointer">{currentUser}</span></div>
+                                    {isMenuVisible && (<div
+                                        className=" z-10 absolute  left-1/2 transform -translate-x-1/2 bg-white border p-1 rounded shadow w-full ">
+                                        <Link to="/UserProfile" className="block mb-2 hover:underline 0 bg-gray-300 rounded p-2  text-black"
+                                              onClick={() => setIsMenuOpen(false)}>Mój profil</Link>
+                                        <Link to="/OrderList" className="block mb-2 hover:underline bg-gray-300 rounded p-2 text-black"
+                                              onClick={() => setIsMenuOpen(false)}>Zamówienia</Link>
+                                        <button onClick={() => {
+                                            handleLogout();
+                                            setIsMenuOpen(false);
+                                        }} className="hover:underline w-full text-red-500 bg-gray-300 rounded p-2">Wyloguj
+                                        </button>
+                                    </div>)}
+                                </div>) : (<Link to="/login"
+                                                 className={`hover:underline ${isMenuOpen ? 'bg-gray-300 text-black  ':'bg-gray-600 text-white'}  pl-5 pr-5 p-1 rounded `}
+                                                 onClick={() => setIsMenuOpen(false)}>Login</Link>)}
+                            </div>
                         </li>
-                    }
+                    </ul>
+                    <div className="lg:hidden absolute top-0 right-0 p-4 mr-3">
+                        <button onClick={toggleMenu} className="text-black">
+                            <FaXmark className="text-2xl"/>
 
-
-
-                    <li className="  border-b-2 sm:border-b-2 lg:border-0 py-2"><Link to="/body"
-                                                                                      className="hover:underline"
-                                                                                      onClick={() => setIsMenuOpen(false)}>Ciało</Link></li>
-
-                    <li>
-                        <div className={` ${isMenuOpen ? 'ml-0' : 'ml-10'} min-w-[100px] mt-2`}
-                             onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-                            {currentUser ? (<div className="relative">
-                                <Link to="/UserProfile" onClick={() => setIsMenuOpen(false)}><span
-                                    className="cursor-pointer">{currentUser}</span></Link>
-                                {isMenuVisible && (<div
-                                    className=" z-10 absolute left-1/2 transform -translate-x-1/2 bg-white border p-2 rounded shadow min-w-[100px]">
-                                    <Link to="/UserProfile" className="block mb-2 hover:underline"
-                                          onClick={() => setIsMenuOpen(false)}>Mój profil</Link>
-                                    <Link to="/OrderList" className="block mb-2 hover:underline"
-                                          onClick={() => setIsMenuOpen(false)}>Zamówienia</Link>
-                                    <button onClick={() => {
-                                        handleLogout();
-                                        setIsMenuOpen(false);
-                                    }} className="hover:underline text-red-500">Wyloguj
-                                    </button>
-                                </div>)}
-                            </div>) : (<Link to="/login"
-                                             className="hover:underline bg-gray-600 pl-5 pr-5 p-1 rounded text-white"
-                                             onClick={() => setIsMenuOpen(false)}>Login</Link>)}
-                        </div>
-                    </li>
-                </ul>
-                <div className="lg:hidden absolute top-0 right-0 p-4">
-                    <button onClick={toggleMenu} className="text-black">
-                        Close
-                    </button>
-                </div>
-            </nav>
-        </div>
-    </header>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
     );
 }
 

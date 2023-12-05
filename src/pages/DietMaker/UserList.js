@@ -23,6 +23,10 @@ const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
     return new Date(dateString).toLocaleDateString(undefined, options);
 };
+const formatDate2 = (dateString) => {
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+};
 const UserList = () => {
     const navigate = useNavigate()
     const [users, setUsers] = useState([]);
@@ -85,7 +89,8 @@ const UserList = () => {
                 className="p-2 border border-gray-300 rounded mb-4 w-full"
             />
 
-            <table className="min-w-full bg-white">
+            <div className="overflow-x-auto">
+                <table className="min-w-full bg-white">
                 <thead>
                 <tr>
                     <th className="py-2 px-4 border-b border-gray-200">Username</th>
@@ -122,14 +127,14 @@ const UserList = () => {
                             {user.zamowienia && user.zamowienia.length > 0 ? user.zamowienia[0].duration + ' msc' : "-"}
                         </td>
                         <td className="py-2 px-4 border-b border-gray-200">
-                            {user.zamowienia && user.zamowienia.length > 0
-                                ? `${formatDate(user.zamowienia[0].data_rozpoczecia)} (${calculateTimeDifference(user.zamowienia[0].data_rozpoczecia)})`
-                                : "-"}
+                            <span className="block md:hidden">{formatDate2(user.zamowienia[0].data_rozpoczecia)}</span>
+                            <span className="hidden md:block">{formatDate(user.zamowienia[0].data_rozpoczecia)}</span>
                         </td>
                     </tr>
                 )) : null}
                 </tbody>
             </table>
+            </div>
 
             <div className="mt-4">
                 {/* Komponent paginacji */}

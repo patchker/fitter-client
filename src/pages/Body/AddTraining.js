@@ -43,7 +43,7 @@ const AddTraining = () => {
     const startTraining = () => {
         const accessToken = localStorage.getItem('access_token');
 
-        axios.get(Ip + '/training-start/', {
+        axios.get(Ip + '/api/training-start/', {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },

@@ -50,7 +50,7 @@ const UserProgress = () => {
     useEffect(() => {
         const accessToken = localStorage.getItem('access_token');
 
-        axios.get(Ip + '/user-progress/', {
+        axios.get(Ip + '/api/user-progress/', {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
@@ -133,9 +133,9 @@ const UserProgress = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <h2 className="text-2xl font-bold mb-4">Your Training Sessions</h2>
+            <h2 className="text-xl md:text-2xl font-bold mb-4">Your Training Sessions</h2>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Kafelki z informacjami */}
                 <div className="card center-content rounded-2xl col-span-1">
                     <div className="number">{data.num_trainings_this_week}</div>
@@ -158,27 +158,35 @@ const UserProgress = () => {
                          className="current-measurements absolute top-0 left-1/2 transform -translate-x-1/2 p-1 rounded-md w-full">
         <span className="text-lg font-semibold text-black">Aktualne pomiary</span>
     </span>
-                    <img src="man4.png" className="w-52"/> {/* Dostosuj rozmiar obrazu według potrzeb */}
-                    <span className="absolute top-48 left-2 bg-gray-400 bg-opacity-70 p-1 rounded-md">
-        <span className="text-xs font-semibold text-gray-800">Biceps</span><br/>
+                    <img src="man4.png" className="w-full"/> {/* Dostosuj rozmiar obrazu według potrzeb */}
+
+
+                    <span className="absolute bg-gray-400 rounded" style={{ top: '30%', left: '2%' }}> {/* Przykład procentowego pozycjonowania */}
+                        <span className="text-xs font-semibold text-gray-800">Biceps</span><br/>
         <span className="text-lg font-semibold text-emerald-500">{latestMeasurement ? `${latestMeasurement.bicep}cm` : 'N/A'}</span>
     </span>
-                    <span className="absolute top-40 left-56 bg-gray-400 bg-opacity-70 p-1 rounded-md">
-        <span className="text-xs font-semibold text-gray-800">Klatka</span><br/>
+
+
+                    <span className="absolute bg-gray-400 rounded" style={{ top: '20%', left: '50%' }}> {/* Przykład procentowego pozycjonowania */}
+                        <span className="text-xs font-semibold text-gray-800">Klatka</span><br/>
         <span className="text-lg font-semibold text-emerald-500">{latestMeasurement ? `${latestMeasurement.chest}cm` : 'N/A'}</span>
     </span>
-                    <span className="absolute top-60 left-52 bg-gray-400 bg-opacity-80 p-1 rounded-md">
-        <span className="text-xs font-semibold text-gray-800">Pas</span><br/>
+
+                    <span className="absolute bg-gray-400 rounded" style={{ top: '40%', left: '50%' }}> {/* Przykład procentowego pozycjonowania */}
+                        <span className="text-xs font-semibold text-gray-800">Pas</span><br/>
         <span className="text-lg font-semibold text-emerald-500">{latestMeasurement ? `${latestMeasurement.waist}cm` : 'N/A'}</span>
     </span>
-                    <span className="absolute top-80 left-10 bg-gray-400 bg-opacity-70 p-1 rounded-md">
-        <span className="text-xs font-semibold text-gray-800">Udo</span><br/>
+
+                    <span className="absolute bg-gray-400 rounded" style={{ top: '50%', left: '2%' }}> {/* Przykład procentowego pozycjonowania */}
+                        <span className="text-xs font-semibold text-gray-800">Udo</span><br/>
         <span className="text-lg font-semibold text-emerald-500">{latestMeasurement ? `${latestMeasurement.thigh}cm` : 'N/A'}</span>
     </span>
+
+
                 </div>
 
 
-                <div onClick={() => navigate("/trainings")} className="card rounded-2xl col-span-1 lg:col-span-1 hover:scale-[102%] hover:transition hover:cursor-pointer flex flex-col justify-center">
+                <div onClick={() => navigate("/trainings")} className="card2 rounded-2xl col-span-1 lg:col-span-1 hover:scale-[102%] hover:transition hover:cursor-pointer flex flex-col justify-center">
                     <div className="header-text mb-5">Ostatni trening:</div>
 
                     {data.last_three_trainings && data.last_three_trainings.length > 0 && (
@@ -190,7 +198,7 @@ const UserProgress = () => {
                                 <div key={exerciseIndex} className="exercise-block my-2">
                                     <p className="exercise-name font-bold">{exercise.name}</p>
                                     {exercise.series.map((serie, serieIndex) => (
-                                        <p key={serieIndex} className="serie-details text-sm">Series {serieIndex + 1}: {serie.weight} kg - {serie.repetitions} reps</p>
+                                        <p key={serieIndex} className="serie-details text-sm">[{serieIndex + 1}]: {serie.weight} kg - {serie.repetitions} reps</p>
                                     ))}
                                 </div>
                             ))}

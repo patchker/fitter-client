@@ -9,14 +9,17 @@ const OrderList = () => {
 
     const fetchOrders = async (userToken) => {
         try {
-            const response = await axios.get(ip+'/user_orders/', {
+            const response = await axios.get(ip+'/api/user_orders/', {
                 headers: {
                     'Authorization': `Bearer ${userToken}`
                 }
             });
+            console.log("response.data", response.data)
+
             return response.data;
         } catch (error) {
             console.error('There was an error fetching the orders!', error);
+            console.log("ERROR", error)
             return null;
         }
     };
