@@ -143,6 +143,11 @@ function PurchaseDiet() {
         navigate("/paymentPage");
 
     };
+    const countries = [
+        { code: 'PL', name: 'Polska' },
+        { code: 'US', name: 'Stany Zjednoczone' },
+        // Dodaj więcej krajów zgodnie z potrzebami
+    ];
 
 
     const handleAddressChange = (event) => {
@@ -242,14 +247,19 @@ function PurchaseDiet() {
                         className="w-full p-2 border rounded"
                         placeholder="Kod pocztowy"
                     />
-                    <input
-                        type="text"
+                    <select
                         name="country"
                         value={address.country}
                         onChange={handleAddressChange}
                         className="w-full p-2 border rounded"
-                        placeholder="Kraj"
-                    />
+                    >
+                        <option value="">Wybierz kraj</option>
+                        {countries.map((country) => (
+                            <option key={country.code} value={country.code}>
+                                {country.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
             <div className="mb-6">
