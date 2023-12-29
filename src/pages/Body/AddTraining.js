@@ -48,7 +48,6 @@ const AddTraining = () => {
                 'Authorization': `Bearer ${accessToken}`
             },
         }).then(response => {
-            console.log("response.data", response.data)
             setTrainingId(response.data.id)
             setIsTrainingStarted(true);
         })
@@ -157,8 +156,6 @@ const AddTraining = () => {
     };
 
 
-    console.log(exercisesList); // Check the data structure
-    console.log(exercise); // Check the current search term
 
 
 
@@ -182,13 +179,13 @@ const AddTraining = () => {
                                     {/* Wyszukiwarka ćwiczeń */}
                                     <div className="mb-4 relative">
                                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="exercise">
-                                            Exercise
+                                            Ćwiczenie
                                         </label>
                                         <input
                                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                             id="exercise"
                                             type="text"
-                                            placeholder="e.g., Deadlift"
+                                            placeholder="np. Martwy ciąg"
                                             value={exercise}
                                             onChange={handleExerciseChange}
                                             required
@@ -211,37 +208,46 @@ const AddTraining = () => {
                                     </div>
 
 
+                                    <div className="mb-4">
+                                        <div className="flex justify-center space-x-56 mb-2 mr-10">
+                                            <label className="text-gray-700 text-sm font-bold" htmlFor="weight">
+                                                Waga w kg
+                                            </label>
+                                            <label className="text-gray-700 text-sm font-bold" htmlFor="repetitions">
+                                                Powtórzenia
+                                            </label>
+                                        </div>
+                                        {series.map((s, index) => (
+                                            <div key={index} className="flex items-center mb-4 space-x-2">
+                                                <div className="flex-1">
+                                                    <input
+                                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        type="number"
+                                                        placeholder="Waga w kg"
+                                                        value={s.weight}
+                                                        onChange={(e) => handleSeriesChange(index, 'weight', e.target.value)}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div className="flex-1">
+                                                    <input
+                                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                        type="number"
+                                                        placeholder="Powtórzenia"
+                                                        value={s.repetitions}
+                                                        onChange={(e) => handleSeriesChange(index, 'repetitions', e.target.value)}
+                                                        required
+                                                    />
+                                                </div>
+                                                {series.length > 1 && (
+                                                    <button type="button" onClick={() => removeSeries(index)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                                        &#x2212; {/* Minus symbol */}
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
 
-
-                                    {series.map((s, index) => (
-                                        <div key={index} className="flex items-center mb-4 space-x-2">
-                                            <div className="flex-1">
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        type="number"
-                                        placeholder="Weight in kg"
-                                        value={s.weight}
-                                        onChange={(e) => handleSeriesChange(index, 'weight', e.target.value)}
-                                        required
-                                    />
-                                </div>
-                                <div className="flex-1">
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        type="number"
-                                        placeholder="Repetitions"
-                                        value={s.repetitions}
-                                        onChange={(e) => handleSeriesChange(index, 'repetitions', e.target.value)}
-                                        required
-                                    />
-                                </div>
-                                            {series.length > 1 && (
-                                                <button type="button" onClick={() => removeSeries(index)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                                    &#x2212; {/* Minus symbol */}
-                                                </button>
-                                            )}
-                            </div>
-                        ))}
 
                                     <div className="mt-4">
                                         <div className="mb-10 flex justify-end">
@@ -252,10 +258,10 @@ const AddTraining = () => {
                                         </div>
                                         <div className="flex justify-end gap-5">
                                             <button type="button" onClick={() => {setShowForm(false); setSeries([{ weight: '', repetitions: '' }])}} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300">
-                                                Cancel
+                                                Anuluj
                                             </button>
-                                            <button type="submit" className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300">
-                                                Submit
+                                            <button type="submit" className="bg-green-500 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded transition duration-300">
+                                                Dodaj
                                             </button>
                                         </div>
                                     </div>
@@ -275,9 +281,9 @@ const AddTraining = () => {
                                             <div key={exerciseIndex}>
                                                 <div className="flex justify-between items-center mb-1">
                                                     <h3 className="text-lg font-semibold text-blue-600">{exercise.name}</h3>
-                                                    <button onClick={() => handleEdit(dataIndex)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded transition duration-300">
+                                                    {/*<button onClick={() => handleEdit(dataIndex)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded transition duration-300">
                                                         Edit
-                                                    </button>
+                                                    </button>*/}
                                                 </div>
                                                 <div className="grid grid-cols-1 gap-1">
                                                     {exercise.series.map((s, seriesIndex) => (

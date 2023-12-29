@@ -1,3 +1,3 @@
-const ip = "https://www.patchker.com";
-//const ip = "http://127.0.0.1:8000";
+//const ip = "https://www.patchker.com";
+;const ip = "http://192.168.1.102:8000";
 export default ip

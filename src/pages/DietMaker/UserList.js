@@ -36,6 +36,7 @@ const UserList = () => {
     const { logout } = useAuth();
     const [orderStatusFilter, setOrderStatusFilter] = useState(''); // Dodatkowy stan dla filtra
     const [isSelectOpen, setIsSelectOpen] = useState(false);
+    const [totalPages, setTotalPages] = useState(0);
 
     const handleFilterChange = (event) => {
         setOrderStatusFilter(event.target.value);
@@ -63,6 +64,8 @@ const UserList = () => {
                     params: params
                 });
                 setUsers(response.data);
+                setTotalPages(response.data.total_pages); // Załóżmy, że backend zwraca całkowitą liczbę stron
+
             } catch (error) {
                 console.error('Error fetching data: ', error);
                 if (error.response && error.response.status === 401) {
@@ -74,10 +77,23 @@ const UserList = () => {
         fetchData();
     }, [searchTerm, currentPage, orderStatusFilter]);
 
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+    };
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
     };
+    function translateStatus(status) {
+        const statusTranslations = {
+            'Completed': 'Zakończone',
+            'pending': 'Oczekujące',
+            'Cancelled': 'Anulowane',
+            'new': 'Nowe',
+        };
+
+        return statusTranslations[status] || status;
+    }
 
     return (
         <div className="container mx-auto p-4">
@@ -85,7 +101,7 @@ const UserList = () => {
                 type="text"
                 value={searchTerm}
                 onChange={handleSearchChange}
-                placeholder="Search users"
+                placeholder="Szukaj użytkowników"
                 className="p-2 border border-gray-300 rounded mb-4 w-full"
             />
 
@@ -93,9 +109,8 @@ const UserList = () => {
                 <table className="min-w-full bg-white">
                 <thead>
                 <tr>
-                    <th className="py-2 px-4 border-b border-gray-200">Username</th>
+                    <th className="py-2 px-4 border-b border-gray-200">Nazwa użytkownika</th>
                     <th className="py-2 px-4 border-b border-gray-200">
-                        {/* Rozwijana lista wewnątrz nagłówka */}
                         <select
                             value={orderStatusFilter}
                             onChange={handleFilterChange}
@@ -104,14 +119,15 @@ const UserList = () => {
                             onBlur={() => setIsSelectOpen(false)}
                         >
                             <option value="">{isSelectOpen ? "Wszystkie" : "Status"}</option>
-                            <option value="Active">Aktywne</option>
                             <option value="Completed">Zakończone</option>
                             <option value="Pending">Oczekujące</option>
+                            <option value="New">Nowe</option>
+                            <option value="Cancelled">Anulowane</option>
                         </select>
 
                     </th>
-                    <th className="py-2 px-4 border-b border-gray-200">Order Duration</th>
-                    <th className="py-2 px-4 border-b border-gray-200">Order Creation Time</th>
+                    <th className="py-2 px-4 border-b border-gray-200">Długość diety</th>
+                    <th className="py-2 px-4 border-b border-gray-200">Złożenie zamówienia</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -121,7 +137,7 @@ const UserList = () => {
                         className="hover:bg-gray-100 cursor-pointer">
                         <td className="py-2 px-4 border-b border-gray-200">{user.username}</td>
                         <td className="py-2 px-4 border-b border-gray-200">
-                            {user.zamowienia && user.zamowienia.length > 0 ? user.zamowienia[0].status : "Brak zamówień"}
+                            {user.zamowienia && user.zamowienia.length > 0 ? translateStatus(user.zamowienia[0].status) : "Brak zamówień"}
                         </td>
                         <td className="py-2 px-4 border-b border-gray-200">
                             {user.zamowienia && user.zamowienia.length > 0 ? user.zamowienia[0].duration + ' msc' : "-"}
@@ -136,8 +152,16 @@ const UserList = () => {
             </table>
             </div>
 
-            <div className="mt-4">
-                {/* Komponent paginacji */}
+            <div className="mt-4 flex justify-center">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNumber => (
+                    <button
+                        key={pageNumber}
+                        onClick={() => handlePageChange(pageNumber)}
+                        className={`mx-1 px-4 py-2 rounded ${currentPage === pageNumber ? 'bg-blue-500 text-white' : 'bg-white'}`}
+                    >
+                        {pageNumber}
+                    </button>
+                ))}
             </div>
         </div>
     );

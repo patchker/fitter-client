@@ -7,7 +7,6 @@ export const OrderProvider = ({ children }) => {
 
     function setOrder(orderPlaced)
     {
-        console.log("[CONTEXT] Zmiana na ", !orderPlaced)
         setOrderPlaced(prevOrderPlaced => !prevOrderPlaced);
     }
 

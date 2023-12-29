@@ -6,7 +6,7 @@ const ExerciseItem = ({ exercise }) => (
         <div className="font-semibold text-emerald-600 text-lg">{exercise.name}</div>
         {(exercise.series || []).map((serie, serieIndex) => (
             <div key={serieIndex} className="text-sm mt-1 pl-4 text-gray-700">
-                {serie.repetitions} reps of {serie.weight}kg
+               [{serieIndex+1}] {serie.weight}kg x {serie.repetitions}
             </div>
         ))}
     </div>
@@ -38,7 +38,7 @@ const Collapsible = ({ training }) => {
                         className="w-full text-center py-3 px-4 hover:bg-gradient-to-r from-gray-200 to-gray-300 font-semibold text-lg bg-gradient-to-l from-gray-100 to-gray-200 flex items-center justify-center"
                         onClick={() => setIsOpen(!isOpen)}
                     >
-                        [{[training.id]}] Trening dnia {formatDate(training.date)}
+                        <span className="text-gray-500 mr-2">ID: {[training.id]} </span> - Trening dnia {formatDate(training.date)}
                         {isOpen ? <FaAngleUp className="h-5 w-5 ml-2" /> : <FaAngleDown className="h-5 w-5 ml-2" />}
                     </button>
                     {isOpen && (

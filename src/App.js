@@ -2,13 +2,13 @@ import logo from './logo.svg';
 import './App.css';
 import HomePage from "./pages/HomePage/HomePage"
 import "./"
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   BrowserRouter as Router,
   Route,
   Routes
 } from 'react-router-dom';
-
+import { Helmet } from 'react-helmet';
 import Header from './pages/HomePage/Header';
 import Footer from './pages/HomePage/Footer';
 import Login from './pages/Login/Login';
@@ -61,8 +61,33 @@ const ProtectedIngredients = withAuthProtection(Ingredients);
 //const [orderPlaced, setOrderPlaced] = useState(false);
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const password = localStorage.getItem('password');
+    if (password === 'inz') {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogin = (enteredPassword) => {
+    if (enteredPassword === 'inz') {
+      localStorage.setItem('password', enteredPassword);
+      setIsAuthenticated(true);
+    } else {
+      alert('Nieprawidłowe hasło!');
+    }
+  };
+
+  if (!isAuthenticated) {
+    return <Login2 onLogin={handleLogin} />;
+  }
+
   return (
     <div className="App">
+      <Helmet>
+        <title>Fitter</title>
+      </Helmet>
       <Router>
 
         <div className="min-h-screen flex flex-col font-poppins">
@@ -114,5 +139,36 @@ function App() {
     </div>
   );
 }
+function Login2({ onLogin }) {
+  const [password, setPassword] = useState('');
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onLogin(password);
+  };
+
+  return (
+      <div className="flex justify-center items-center mt-40"> {/* Wyśrodkowanie formularza na całej dostępnej wysokości */}
+        <form onSubmit={handleSubmit} className="w-full max-w-xs"> {/* Ustawienie maksymalnej szerokości formularza */}
+          <div className="flex flex-col items-center mb-6"> {/* Wyśrodkowanie tekstu wewnątrz formularza */}
+            <span className="font-masque text-6xl mb-2">FITTER</span>
+            <span>Autoryzacja</span>
+          </div>
+          <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="bg-gray-200 rounded w-full p-2 mb-4"
+          />
+          <button
+              type="submit"
+              className="w-full bg-emerald-500 px-3 py-1 rounded text-white font-semibold"
+          >
+            Wejdź
+          </button>
+        </form>
+      </div>
+  );
+
+}
 export default App;

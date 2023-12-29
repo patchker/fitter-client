@@ -29,7 +29,6 @@ export const AuthProvider = ({ children }) => {
     const [currentRole, setCurrentRole] = useState(null);
     const [userData, setUserData] = useState(null); // nowy stan dla dodatkowych danych użytkownika
 
-        console.log("currentRole",currentRole)
     const logout = () => {
         localStorage.removeItem('currentUser');
         localStorage.removeItem('access_token');

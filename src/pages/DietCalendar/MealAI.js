@@ -45,7 +45,6 @@ const MealAI = () => {
 
         try {
             const response = await axios.post(url, requestData);
-            console.log(response.data); // Tutaj możesz przetworzyć odpowiedź
             setDietData(response.data);
         } catch (error) {
             console.error('Wystąpił błąd podczas pobierania danych:', error);
@@ -54,20 +53,7 @@ const MealAI = () => {
 
 
 
-    const fetchData2 = async () => {
-        const token = localStorage.getItem("access_token");
-        const url = Ip+'/api/mealAI/';
-        const headers = {
-            'Authorization': `Bearer ${token}`
-        };
 
-        try {
-            const response = await axios.post(url, {}, { headers }); // Pusty obiekt jako ciało żądania
-            console.log(response.data);
-        } catch (error) {
-            console.error('Wystąpił błąd:', error);
-        }
-    };
 
 
 
@@ -119,7 +105,6 @@ const MealAI = () => {
                 />
             </div>
             <button onClick={fetchData} className="fetch-button">Pobierz Plan Diety</button>
-            <button onClick={fetchData2} className="fetch-button">Pobierz Plan Diety2</button>
             <div className="days-container">
                 {dietData.map((day, index) => (
                     <div key={index} className="day">

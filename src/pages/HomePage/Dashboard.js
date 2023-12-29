@@ -36,7 +36,6 @@ function Dashboard() {
             )}
 
 
-            <Link to="/purchasecomponent">dasdadas</Link>
         </div>
     );
 }

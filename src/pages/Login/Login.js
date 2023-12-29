@@ -110,9 +110,9 @@ function Login() {
                     >
                         <div className=" relative w-full">
                             {showTooltip && (
-                                <div className="fixed top-20 right-0 p-4">
+                                <div className="fixed top-10 right-0 p-4">
                                     <div
-                                        className="bg-yellow-500 text-white p-4 rounded-3xl shadow-lg flex items-center">
+                                        className="bg-yellow-500 text-white p-4 rounded-2xl shadow-lg flex items-center">
                                         <p>Pomyślnie zarejestrowano! Potwierdź email aby się zalogować.</p>
                                         <button onClick={() => setShowTooltip(false)} className="ml-4 text-xl">×
                                         </button>
@@ -123,7 +123,7 @@ function Login() {
                             <form onSubmit={handleSubmit}
                                   className="shadow-2xl rounded-3xl px-4 pt-6 pb-8 mb-4 bg-white h-[550px]">
 
-                                <div className="font-masque text-5xl mb-20">NAZWA</div>
+                                <div className="font-masque text-5xl mb-20">Fitter</div>
                                 <div className=" text-xl mb-8">Zaloguj się za pomocą swoich danych</div>
 
                                 <div className="mb-4">
@@ -211,7 +211,7 @@ function Login() {
                         ) : (
                             // Blok dla innych błędów niż "E-mail niezweryfikowany"
                             <div className="fixed top-10 right-0 p-4">
-                                <div className="bg-yellow-500 text-white p-4 rounded-xl shadow-lg flex items-center">
+                                <div className="bg-red-500 text-white p-4 rounded-xl shadow-lg flex items-center">
                                     <p>{verificationError}</p>
                                     <button onClick={() => setVerificationError(null)} className="ml-4 text-xl">×</button>
                                 </div>

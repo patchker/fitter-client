@@ -12,9 +12,9 @@ function Dieta() {
     const offers = [
         {
             id: 1,
-            title: "Darmowa Dieta od AI",
-            description: "Plan diety stworzony automatycznie przez sztuczną inteligencję.",
-            details: "Ta dieta jest całkowicie darmowa. Otrzymasz spersonalizowany plan żywieniowy wygenerowany przez naszą sztuczną inteligencję.",
+            title: "Automatyczna dieta",
+            description: "Plan diety stworzony automatycznie przez zaawansowane algorytmy.",
+            details: "Ta dieta jest całkowicie darmowa. Otrzymasz spersonalizowany plan żywieniowy wygenerowany przez nasz algorytm",
             link: "freediet",
             price: ""
 
@@ -80,8 +80,8 @@ function Dieta() {
     }
 
     return (
-        <div className="w-full h-full py-16 bg-gray-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+        <div className="w-full h-full  border-t-2  py-16 bg-gray-50 ">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10k">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                     {offers.map(offer => (
                         <OfferCard key={offer.id} offer={offer} onSelect={handleSelectOffer}/>

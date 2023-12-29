@@ -23,8 +23,6 @@ function DietSchedule() {
 
 
     useEffect(() => {
-        console.log("preferences_set updated", preferences);
-
         if (preferences === null) {
             setIsLoading2(false);
         } else if (preferences === false) {
@@ -33,15 +31,7 @@ function DietSchedule() {
 
     }, [preferences]);
 
-    /*
-    useEffect(() => {
-        console.log("ORderinfo update",orderInfo)
-        if(orderInfo.status==="pending")
-        {
-            return <div>PENDING</div>
-        }
-    }, [orderInfo]);
-*/
+
     function formatDate(date) {
         const d = new Date(date);
         const year = d.getFullYear();
@@ -103,7 +93,7 @@ function DietSchedule() {
         return formattedData;
     }
 
-    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const days = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela'];
 
     function getDayDate(index) {
         const date = new Date(currentWeekStart);
@@ -175,14 +165,10 @@ function DietSchedule() {
             },
             params: {startDate, endDate}
         }).then(response => {
-            setIsLoading2(false); // Stop loading when data processing is done
+            setIsLoading2(false);
 
             const rawData = response.data;
-            console.log("rawData",rawData)
-
             const preferences_set2 = rawData.preferences_set;
-
-            console.log("preferences_set",preferences_set2)
             setPreferences(preferences_set2);
             const formattedData = formatDietData(rawData);
             const completeData = days.map((day, index) => {
@@ -191,12 +177,11 @@ function DietSchedule() {
                 const dateString = formatDate(currentDate);
                 return {[dateString]: formattedData[dateString] || []};
             });
-            console.log("completeData",completeData)
 
             setDietData(Object.assign({}, ...completeData));
         })
             .catch(error => {
-                setIsLoading2(false); // Stop loading when data processing is done
+                setIsLoading2(false);
                 setOrderPlaced(false)
                 if (error.response && error.response.status === 401) {
                     logout();
@@ -211,7 +196,6 @@ function DietSchedule() {
 
     const [displayedDaysCount, setDisplayedDaysCount] = useState(0);
 
-    // Tymczasowa zmienna do zliczania wyświetlanych dni
     let tempDisplayedDays = 0;
 
     const daysComponents = days.map((day, index) => {
@@ -228,40 +212,32 @@ function DietSchedule() {
                 />
             );
         }
-        return null; // Zwróć null, jeśli dzień nie jest w zakresie, aby React wiedział, że nic nie ma renderować
+        return null;
     });
 
     useEffect(() => {
-        // Uaktualnij stan tylko po obliczeniu liczby wyświetlanych dni
         setDisplayedDaysCount(tempDisplayedDays);
-    }, [tempDisplayedDays]); // Zależność od tempDisplayedDays, aby zapewnić aktualizację stanu
+    }, [tempDisplayedDays]);
 
     const getGridTemplateColumns = () => {
-        // Tailwind CSS classes for dynamic grid columns
-        let classes = 'grid-cols-1 max-w-[400px] gap-4'; // Domyślnie jedna kolumna dla mobilnych
+        let classes = 'grid-cols-1 max-w-[400px] gap-4';
 
         if (displayedDaysCount > 1) {
-            // Zawsze dwa dni na małych ekranach, jeśli jest więcej niż jeden dzień
             classes += ` sm:grid-cols-2 sm:max-w-[700px] sm:gap-20`;
         }
         if (displayedDaysCount > 2) {
-            // Trzy dni na ekranach średnich
             classes += ` md:grid-cols-3 md:max-w-full md:gap-4`;
         }
         if (displayedDaysCount > 3) {
-            // Cztery dni na ekranach dużych
             classes += ` lg:grid-cols-4`;
         }
         if (displayedDaysCount > 4) {
-            // Pięć dni na ekranach bardzo dużych
             classes += ` xl:grid-cols-5`;
         }
         if (displayedDaysCount > 5) {
-            // Sześć dni na ekranach jeszcze większych, jeśli masz taki breakpoint w swoim Tailwind
             classes += ` 2xl:grid-cols-7`;
         }
         if (displayedDaysCount > 6) {
-            // Siedem dni na ekranach największych
             classes += ` 3xl:grid-cols-7`;
         }
 
@@ -297,7 +273,7 @@ function DietSchedule() {
 
 
     if (isLoading2) {
-        return <div>Loading...</div>; // Or any other loading indicator you prefer
+        return <div>Loading...</div>;
     }
 
     const handleNavigate = () => {

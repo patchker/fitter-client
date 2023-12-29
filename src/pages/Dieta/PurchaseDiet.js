@@ -75,7 +75,7 @@ function PurchaseDiet() {
             {
                 id: 1,
                 type: "Darmowy",
-                title: "Darmowy Plan od AI",
+                title: "Darmowa, automatyczna dieta",
                 details: "Idealny dla osób rozpoczynających swoją przygodę z dietą. Oferuje podstawowe wskazówki i plany żywieniowe.",
                 price: 0
             },

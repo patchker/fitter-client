@@ -89,17 +89,17 @@ function MealDropArea({
         <div
             ref={drop}
             key={mealType}
-            className={`relative flex flex-col p-4 rounded-lg shadow-md mb-4 min-w-[14rem]  ${currentBg} min-h-[120px] transition duration-150 ease-in-out space-y-2`}
+            className={`relative flex flex-col p-2 rounded-lg shadow-md mb-4 min-w-[14rem]  ${currentBg} min-h-[120px] transition duration-150 ease-in-out space-y-2`}
         >
             {filteredMeals.length > 0 ? (
                 filteredMeals.map((meal, index) => (
                     <div
                         key={meal.uuid}
-                        className={`flex flex-col p-2 rounded-2xl   hover:scale-[102%] border-2 border-gray-200 shadow-md hover:shadow-lg hover:transition hover:duration-150  ${index === filteredMeals.length - 1 ? '' : 'border-b border-gray-200'} cursor-pointer`}
+                        className={`flex flex-col p-2 rounded-2xl   hover:scale-[102%] bg-gray-100 border-2 border-gray-400 border-4 shadow-lg hover:shadow-lg hover:transition hover:duration-150  ${index === filteredMeals.length - 1 ? '' : ''} cursor-pointer`}
                         onClick={() => handleContainerClick(meal.uuid)}
                     >
-                        <div className="flex justify-between items-center space-x-2">
-          <span className="text-lg font-semibold truncate" style={{userSelect: 'none'}}>
+                        <div className="flex justify-between items-center space-x-2  border-b-2 border-gray-300">
+          <span className=" font-semibold truncate " style={{userSelect: 'none'}}>
             {meal.meal}
           </span>
                             <EditableField
@@ -127,13 +127,13 @@ function MealDropArea({
                         </div>
                         <div className="flex justify-between items-center mt-2 text-sm space-x-4">
           <span className="flex items-center py-1">
-            <FaDrumstickBite className="mr-1"/>{meal.protein}g
+            <FaDrumstickBite className="mr-1"/>{(meal.grams) / 100 * meal.protein}g
           </span>
                             <span className="flex items-center py-1">
-            <FaDroplet className="mr-1"/>{meal.fats}g
+            <FaDroplet className="mr-1"/>{(meal.grams) / 100 * meal.fats}g
           </span>
                             <span className="flex items-center py-1">
-            <FaWheatAwn className="mr-1"/>{meal.carbohydrates}g
+            <FaWheatAwn className="mr-1"/>{(meal.grams) / 100 * meal.carbohydrates}g
           </span>
                             <span>
             {Math.round((meal.grams) / 100 * meal.calories_per_100g)} kcal

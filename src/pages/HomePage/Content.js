@@ -12,7 +12,6 @@ function Content() {
     const {currentUser, setCurrentUser, logout, currentRole, setCurrentRole} = useAuth();
     const [dietPath, setDietPath] = useState("/dieta");
     const fetchOrders = async (userToken) => {
-        console.log("Fetching orders")
         try {
             const response = await axios.get(ip + '/api/user_orders/', {
                 headers: {
@@ -69,28 +68,40 @@ function Content() {
     };
 
     return (
-        <div className="flex flex-col justify-center items-center m-auto border-2 bg-slate-50 border-gray-50 p-6 space-y-6 shadow-md pb-10 mt-10">
-            <div className="bg-gray-200 p-8 rounded-[50px] shadow-sm space-y-4">
-                <h2 className="text-2xl font-semibold text-center text-gray-800">Twoja Droga do Zdrowszego Życia</h2>
-                <p className="text-lg text-gray-700 text-center">Poznaj nasze narzędzia</p>
-                <p className="text-sm text-gray-600 text-center">Śledź swoje postępy i osiągaj cele zdrowotne z naszymi spersonalizowanymi planami.</p>
+        <div className="flex flex-col justify-center items-center m-auto border-2 bg-gradient-to-r from-slate-100 to-slate-50 border-gray-100 p-10 space-y-8 shadow-2xl">
+            <div className="bg-white p-10 rounded-[50px] shadow-xl space-y-6">
+                <h2 className="text-4xl font-bold text-center text-gray-800">Twoja Droga do Zdrowszego Życia</h2>
+                <p className="text-xl text-gray-700 text-center">Poznaj nasze narzędzia</p>
+                <p className="text-md text-gray-600 text-center">Śledź swoje postępy i osiągaj cele zdrowotne z naszymi spersonalizowanymi planami.</p>
                 {isLoading ? <span>Loading...</span> : (
                     <button
-                        className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 text-center transition-colors duration-200 w-72 h-12 rounded-md"
+                        className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-6 text-center transition-all duration-500 w-full md:w-80 h-14 rounded-lg shadow-md hover:shadow-lg"
                         onClick={handleButtonClick}
                     >
                         Przejdź do Diety
                     </button>
                 )}
-                <ul className="list-disc list-inside text-gray-600 text-left">
-                    <li>Zdrowe przepisy</li>
-                    <li>Personalizowane plany żywieniowe</li>
-                    <li>Wsparcie społeczności</li>
-                    <li>Monitorowanie postępów</li>
-                </ul>
+                <div className="flex justify-center">
+                    <ul className="text-gray-600 space-y-3">
+                        <li className="flex items-center hover:text-emerald-500 transition-colors duration-300">
+                            <span className="text-emerald-500 mr-2">•</span> Zdrowe przepisy
+                        </li>
+                        <li className="flex items-center hover:text-emerald-500 transition-colors duration-300">
+                            <span className="text-emerald-500 mr-2">•</span> Personalizowane plany żywieniowe
+                        </li>
+                        <li className="flex items-center hover:text-emerald-500 transition-colors duration-300">
+                            <span className="text-emerald-500 mr-2">•</span> Wsparcie społeczności
+                        </li>
+                        <li className="flex items-center hover:text-emerald-500 transition-colors duration-300">
+                            <span className="text-emerald-500 mr-2">•</span> Monitorowanie postępów
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     );
+
+
 }
 
 export default Content;

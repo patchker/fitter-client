@@ -18,24 +18,23 @@ function DroppableDay({
                           MealDropArea,
                           mapTimeToMealType
                       }) {
-    //console.log("Rendering DroppableDay:", day.date, meals); // log
 
     const {totalProteins, totalFats, totalCarbs, totalKcal} = calculateMacros(meals);
 
     const mealTypes = ['BREAKFAST', 'LUNCH', 'DINNER', 'AFTERNOON_SNACK', 'EVENING_SNACK'];
     const dateObject = new Date(day.date);
-    const weekDay = dateObject.toLocaleDateString('en-US', {weekday: 'long'});
+    const weekDay = dateObject.toLocaleDateString('pl-PL', {weekday: 'long'});
     const weekDayCapitalized = weekDay.charAt(0).toUpperCase() + weekDay.slice(1);
     const currentDate = new Date(day.date);
     currentDate.setHours(12, 0, 0, 0);
 
 
     const prettyMealTypes = {
-        BREAKFAST: 'Breakfast',
+        BREAKFAST: 'Śniadanie',
         LUNCH: 'Lunch',
-        DINNER: 'Dinner',
-        AFTERNOON_SNACK: 'Afternoon Snack',
-        EVENING_SNACK: 'Evening Snack',
+        DINNER: 'Obiad',
+        AFTERNOON_SNACK: 'Podwieczorek',
+        EVENING_SNACK: 'Kolacja',
     };
 
     function formatMealType(mealType) {
@@ -56,7 +55,6 @@ function DroppableDay({
 
     function isToday(date) {
         date = new Date(date);
-        //console.log("EEEE",date);
         const today = new Date();
         return date.getDate() === today.getDate() &&
             date.getMonth() === today.getMonth() &&
@@ -79,7 +77,6 @@ function DroppableDay({
                 <span className="border-l-2 pl-2 py-1">{totalKcal}Kcal</span>
             </div>
             {mealTypes.map(mealType2 => {
-                // console.log("Key (mealType2):", mealType2); // Logowanie wartości klucza
 
                 return (
                     <div className="flex flex-col mt-4  " key={`${mealType2}-${day.date}`}>

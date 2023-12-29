@@ -11,7 +11,6 @@ export const TrainingProvider = ({ children }) => {
     const [trainings, setTrainings] = useState([]);
 
     const fetchTrainings = async () => {
-        console.log("Wywołanie funkcji fetchTrainings w ContextAPI");
 
         try {
             const token = localStorage.getItem("access_token"); // Replace with your actual token key
@@ -19,7 +18,6 @@ export const TrainingProvider = ({ children }) => {
                 Authorization: `Bearer ${token}`
             };
             const response = await axios.get(`${Ip}/api/trainings/`, { headers });
-            console.log("Dane treningów",response.data)
 
             setTrainings(response.data);
         } catch (error) {
@@ -28,8 +26,6 @@ export const TrainingProvider = ({ children }) => {
 
     // W TrainingContext.js
     const addTraining = (trainingId, newExercise) => {
-        console.log(`Wywołanie funkcji addTraining w ContextAPI z ćwiczeniem`, newExercise);
-        // Logika aktualizacji stanu treningów
         setTrainings(prevTrainings => {
             // Znajdź i zaktualizuj odpowiedni trening
             return prevTrainings.map(training => {

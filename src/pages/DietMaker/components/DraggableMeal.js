@@ -109,12 +109,6 @@ function DraggableMeal({meal, mealType, onDragStart, onDragEnd, onDoubleClick}) 
 
 
 
-
-    console.log("meal.lactose_free", meal.lactose_free)
-    console.log("meal.nut_free", meal.nut_free)
-    console.log("isDragging", isDragging)
-    console.log("allergenIndicators", allergenIndicators)
-
     return (
         <div ref={drag}
              className={`rounded border-2 ${isDragging ? 'opacity-50 bg-gray-300' : 'opacity-100 bg-gray-100'} mb-2 cursor-pointer`}>

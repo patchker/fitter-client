@@ -9,12 +9,11 @@ const OrderList = () => {
 
     const fetchOrders = async (userToken) => {
         try {
-            const response = await axios.get(ip+'/api/user_orders/', {
+            const response = await axios.get(ip + '/api/user_orders/', {
                 headers: {
                     'Authorization': `Bearer ${userToken}`
                 }
             });
-            console.log("response.data", response.data)
 
             return response.data;
         } catch (error) {
@@ -38,19 +37,30 @@ const OrderList = () => {
     }, [userToken]);
 
     const formatDate = (dateString) => {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const options = {year: 'numeric', month: 'long', day: 'numeric'};
         return new Date(dateString).toLocaleDateString(undefined, options);
     };
+    function translateStatus(status) {
+        const statusTranslations = {
+            'Completed': 'Zakończone',
+            'pending': 'Oczekujące',
+            'Cancelled': 'Anulowane',
+            'New': 'Nowe',
+            // Dodaj więcej statusów według potrzeb
+        };
+
+        return statusTranslations[status] || status;
+    }
 
     return (
-        <div className="bg-gray-50 py-8">
-            <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <h2 className="text-2xl font-semibold mb-6 text-gray-900">Your Orders</h2>
+        <div className="bg-gray-50 py-8  border-t-2">
+            <div className=" mx-auto sm:px-6 lg:px-8  min-h-[600px]  max-w-[1000px]">
+                <h2 className="text-2xl font-semibold mb-6 text-gray-900">Twoje zamówienia</h2>
                 {isLoading ? (
                     <div className="flex justify-center items-center">
-                        <p className="text-gray-500 italic">Loading orders...</p>
+                        <p className="text-gray-500 italic">Ładowanie...</p>
                     </div>
-                ) : (
+                ) : orders.length > 0 ? (
                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
                         <ul className="divide-y divide-gray-200">
                             {orders.map(order => (
@@ -61,16 +71,15 @@ const OrderList = () => {
                                                 <p className="text-sm font-medium text-indigo-600 truncate">
                                                     {order.dieta ? order.dieta.nazwa : "Brak nazwy"}
 
-                                                        {order.duration === 1 && ` (${order.duration} miesiąc)`}
-                                                        {order.duration > 1 && order.duration < 12 && ` (${order.duration} miesiące)`}
-                                                        {order.duration === 12 && ` (${order.duration} miesięcy)`}
+                                                    {order.duration === 1 && ` (${order.duration} miesiąc)`}
+                                                    {order.duration > 1 && order.duration < 12 && ` (${order.duration} miesiące)`}
+                                                    {order.duration === 12 && ` (${order.duration} miesięcy)`}
                                                 </p>
-
 
 
                                                 <div className="ml-2 flex-shrink-0 flex">
                                                     <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                        {order.status}
+                                                        {translateStatus(order.status)}
                                                     </p>
                                                 </div>
                                             </div>
@@ -78,15 +87,15 @@ const OrderList = () => {
                                                 <div className="sm:flex">
 
                                                     <p className="flex items-center text-sm text-gray-500">
-                                                        Order ID: {order.id}
+                                                        ID: {order.id}
                                                     </p>
 
                                                     <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                                                        Start Date: {formatDate(order.data_rozpoczecia)}
+                                                        Data rozpoczęcia: {formatDate(order.data_rozpoczecia)}
                                                     </p>
 
                                                     <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                                                        End Date: {formatDate(order.data_zakonczenia)}
+                                                        Data zakończenia: {formatDate(order.data_zakonczenia)}
                                                     </p>
                                                 </div>
                                             </div>
@@ -96,10 +105,14 @@ const OrderList = () => {
                             ))}
                         </ul>
                     </div>
+                ) : (
+                    <div className="text-center py-4">
+                        <p className="text-gray-700">Nie masz żadnych zamówień.</p>
+                    </div>
                 )}
             </div>
         </div>
     );
-};
+}
 
 export default OrderList;

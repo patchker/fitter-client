@@ -16,10 +16,7 @@ function PaymentPage() {
     const { paymentData } = usePayment();
     const { orderPlaced, setOrderPlaced, setOrder } = useContext(OrderPlacedContext);
 
-    useEffect(() => {
-        console.log("CHANGED: ",orderPlaced);
 
-    }, [orderPlaced]);
     //setOrderPlaced(true)
     React.useEffect(() => {
         if (paymentData) {
@@ -55,7 +52,6 @@ function PaymentPage() {
                 console.log(error);
             });
 
-        console.log("selectedDiet", selectedDiet)
         axios({
             method: 'post',
             url: ip+'/api/zamowienia/',
@@ -71,7 +67,6 @@ function PaymentPage() {
                 console.log(response);
                 setOrder()
                 setOrderPlaced(true)
-                console.log("SETTING TO TRUE");
 
                 navigate("/successPage");
             })

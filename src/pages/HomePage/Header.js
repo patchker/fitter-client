@@ -39,7 +39,6 @@ function Header() {
         setIsMenuOpen(!isMenuOpen);
     };
     const fetchOrders = async (userToken) => {
-        console.log("Fetching orders")
         try {
             const response = await axios.get(ip + '/api/user_orders/', {
                 headers: {
@@ -124,7 +123,7 @@ function Header() {
             <div className="container mx-auto flex justify-between items-center">
                 <Link to="/" class="flex items-center">
                     <img src="../logo2.png" className="w-12"/>
-                    <h1 className="text-2xl font-bold font-masque ml-3l">Nazwa</h1>
+                    <h1 className="text-2xl font-bold font-masque ml-3l">Fitter</h1>
                 </Link>
 
                 <div className="lg:hidden mr-5">
@@ -152,7 +151,7 @@ function Header() {
                             <Link to="/userlist" className="hover:underline" onClick={() => setIsMenuOpen(false)}>
 
                                 <li className={` border-b-2 sm:border-b-2 lg:border-0 py-2 ${isMenuOpen && 'bg-gray-300 rounded m-1'} `}>
-                                    DietaMaker
+                                    DietEditor
                                 </li>
                             </Link>
 
