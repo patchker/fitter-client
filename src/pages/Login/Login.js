@@ -134,12 +134,29 @@ function Login() {
                             )}
 
                             <form onSubmit={handleSubmit}
-                                  className="shadow-2xl rounded-3xl px-4 pt-6 pb-8 mb-4 bg-white h-[550px]">
+                                  className="shadow-2xl rounded-3xl px-4 pt-6 pb-8 mb-4 bg-white h-[650px] lg:h-[550px] ">
 
                                 <div className="font-masque text-5xl mb-20">Fitter</div>
                                 <div className=" text-xl mb-8">Zaloguj się za pomocą swoich danych</div>
+                                <div className={`rounded-xl bg-yellow-200 pt-1 `}>
+                                <div className=" text-xs">Przykładowe dane logowania do konta z rolą dietetyka:</div>
+                                    <div className={`flex flex-col justify-center items-center`}>
+                                        <div className={`flex justify-center items-start flex-col`}>
+                                <div className=" text-xs ">Login: dietetyk</div>
+                                <div className=" text-xs ">Hasło: Dietetyk123</div>
+                                            <button
+                                                className={`mt-1 mb-1 rounded bg-gray-600 text-white px-5 py-1 `}
+                                                onClick={(event)=>{
+                                                    event.preventDefault();
+                                                    setUsername("dietetyk");
+                                                    setPassword("Dietetyk123");
+                                                }}
 
-                                <div className="mb-4">
+                                            >Wypełnij</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mb-4 mt-4">
                                     <label className="block text-gray-700 text-sm mb-2" htmlFor="username">
                                         Nazwa użytkownika
                                     </label>
@@ -173,7 +190,7 @@ function Login() {
                                 </div>
 
                                 {/* Przycisk rejestracji */}
-                                <div className="mt-5 flex items-center justify-center m-auto m-0 sm:absolute  right-[170px] top-[430px] sm:right-[170px] sm:top-[450px] md:right-[170px] md:top-[450px] sm:transform sm:-translate-y-1/2 lg:right-[-250px] lg:top-[200px]">
+                                <div className="mt-5 flex items-center justify-center m-auto m-0 sm:absolute  right-[170px] top-[430px] sm:right-[170px] sm:top-[550px] md:right-[170px] md:top-[550px] sm:transform sm:-translate-y-1/2 lg:right-[-250px] lg:top-[200px]">
                                     <button
                                         type="button"
 
@@ -189,6 +206,9 @@ function Login() {
                                     </button>
 
                                 </div>
+
+
+
                             </form>
 
 
