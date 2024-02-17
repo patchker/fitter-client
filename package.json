@@ -1,6 +1,7 @@
 {
   "name": "test2",
   "version": "0.1.0",
+  "homepage": "/works/fitter/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",

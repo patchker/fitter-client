@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import ip from '../../config/Ip'
 
@@ -18,7 +18,6 @@ const OrderList = () => {
             return response.data;
         } catch (error) {
             console.error('There was an error fetching the orders!', error);
-            console.log("ERROR", error)
             return null;
         }
     };
@@ -28,7 +27,6 @@ const OrderList = () => {
             const fetchedOrders = await fetchOrders(userToken);
             if (fetchedOrders) {
                 setOrders(fetchedOrders);
-                //console.log("Orders", fetchedOrders)
             }
             setIsLoading(false);
         };
@@ -40,13 +38,17 @@ const OrderList = () => {
         const options = {year: 'numeric', month: 'long', day: 'numeric'};
         return new Date(dateString).toLocaleDateString(undefined, options);
     };
+
     function translateStatus(status) {
         const statusTranslations = {
             'Completed': 'Zakończone',
+            'completed': 'Zakończone',
             'pending': 'Oczekujące',
+            'Pending': 'Oczekujące',
             'Cancelled': 'Anulowane',
+            'cancelled': 'Anulowane',
             'New': 'Nowe',
-            // Dodaj więcej statusów według potrzeb
+            'new': 'Nowe',
         };
 
         return statusTranslations[status] || status;

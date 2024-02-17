@@ -1,16 +1,15 @@
 
-
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
@@ -19,33 +18,23 @@ code {
 @import 'tailwindcss/utilities';
 /* src/styles/global.css */
 @font-face {
-  font-family: 'Masque'; /* Nazwa, która będzie używana w konfiguracji TailwindCSS i w komponentach React */
-  src: url('../public/MASQUE__.ttf') format('truetype'); /* Ścieżka do pliku czcionki; upewnij się, że jest poprawna */
-  font-weight: normal;
-  font-style: normal;
+    font-family: 'Masque';
+    src: url('../public/MASQUE__.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
 
 @font-face {
-  font-family: 'Poppins'; /* Nazwa, która będzie używana w konfiguracji TailwindCSS i w komponentach React */
-  src: url('../public/Poppins-Regular.ttf') format('truetype'); /* Ścieżka do pliku czcionki; upewnij się, że jest poprawna */
-  font-weight: normal;
-  font-style: normal;
+    font-family: 'Poppins';
+    src: url('../public/Poppins-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
+
+
 @font-face {
-  font-family: 'Protector'; /* Nazwa, która będzie używana w konfiguracji TailwindCSS i w komponentach React */
-  src: url('../public/Protector.ttf') format('truetype'); /* Ścieżka do pliku czcionki; upewnij się, że jest poprawna */
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Potta'; /* Nazwa, która będzie używana w konfiguracji TailwindCSS i w komponentach React */
-  src: url('../public/PottaOne-Regular.ttf') format('truetype'); /* Ścieżka do pliku czcionki; upewnij się, że jest poprawna */
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Bungee'; /* Nazwa, która będzie używana w konfiguracji TailwindCSS i w komponentach React */
-  src: url('../public/Bungee-Regular.ttf') format('truetype'); /* Ścieżka do pliku czcionki; upewnij się, że jest poprawna */
-  font-weight: normal;
-  font-style: normal;
+    font-family: 'Bungee';
+    src: url('../public/Bungee-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }

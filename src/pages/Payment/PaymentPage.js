@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
-import { usePayment } from '../../contexts/PaymentContext';
+import {usePayment} from '../../contexts/PaymentContext';
 import ip from '../../config/Ip'
 import {OrderPlacedContext} from "../../contexts/orderPlacedContext";
 
@@ -13,11 +13,10 @@ function PaymentPage() {
     const [city, setCity] = useState("test2");
     const [zipCode, setZipCode] = useState("test3");
     const [country, setCountry] = useState("test4");
-    const { paymentData } = usePayment();
-    const { orderPlaced, setOrderPlaced, setOrder } = useContext(OrderPlacedContext);
+    const {paymentData} = usePayment();
+    const {orderPlaced, setOrderPlaced, setOrder} = useContext(OrderPlacedContext);
 
 
-    //setOrderPlaced(true)
     React.useEffect(() => {
         if (paymentData) {
             setStreet(paymentData.address.street)
@@ -28,12 +27,57 @@ function PaymentPage() {
             setDuration(paymentData.duration)
         }
     }, [paymentData]);
+
+
+    const fetchOrders = async (userToken) => {
+        try {
+            const response = await axios.get(ip + '/api/user_orders/', {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                }
+            });
+
+
+
+            return response.data;
+        } catch (error) {
+            console.error('There was an error fetching the orders!', error);
+            return null;
+        }
+    };
+    useEffect(() => {
+
+        const checkSubscription = async ()=>
+        {
+            const userToken = localStorage.getItem('access_token');
+
+            const orders = await fetchOrders(userToken);
+
+            if (orders && orders.length > 0) {
+                const lastOrder = orders[orders.length - 1];
+                const currentDate = new Date();
+                const startDate = new Date(lastOrder.data_rozpoczecia);
+                const endDate = new Date(lastOrder.data_zakonczenia);
+                endDate.setHours(23, 59, 59, 999);
+
+                if (currentDate >= startDate && currentDate <= endDate) {
+                    navigate("/dietcalendar");
+                }
+            }
+        }
+
+
+        checkSubscription();
+
+    }, [])
+
+
     const handlePayment = () => {
         const token = localStorage.getItem('access_token');
 
         axios({
             method: 'patch',
-            url: ip+'/api/profile/',
+            url: ip + '/api/profile/',
             headers: {
                 Authorization: `Bearer ${token}`
             },
@@ -48,13 +92,12 @@ function PaymentPage() {
 
             })
             .catch((error) => {
-                console.log("Data",street,city,zipCode,country)
                 console.log(error);
             });
 
         axios({
             method: 'post',
-            url: ip+'/api/zamowienia/',
+            url: ip + '/api/zamowienia/',
             headers: {
                 Authorization: `Bearer ${token}`
             },
@@ -64,7 +107,6 @@ function PaymentPage() {
             }
         })
             .then((response) => {
-                console.log(response);
                 setOrder()
                 setOrderPlaced(true)
 

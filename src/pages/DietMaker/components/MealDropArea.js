@@ -116,7 +116,7 @@ function MealDropArea({
                             />
                             <button
                                 onClick={(e) => {
-                                    e.stopPropagation(); // Zatrzymuje propagację zdarzenia wyżej w hierarchii DOM
+                                    e.stopPropagation();
                                     handleDeleteMeal(day, meal.uuid);
                                     handleChanges();
                                 }}

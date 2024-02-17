@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Ip from "../../config/Ip"
-import './MealAI.css'; // Zaimportuj plik CSS
+import './MealAI.css';
 
 const MealAI = () => {
     const [dietData, setDietData] = useState([]);
@@ -30,8 +30,9 @@ const MealAI = () => {
         setMealPerDay(3);
         setUserWeight(70);
     }, []);
+
     const fetchData = async () => {
-        const url = Ip+'/generate-diet'; // Adres URL do Twojego API
+        const url = Ip+'/generate-diet';
         const requestData = {
             start_date: startDate,
             end_date: endDate,
@@ -50,10 +51,6 @@ const MealAI = () => {
             console.error('Wystąpił błąd podczas pobierania danych:', error);
         }
     };
-
-
-
-
 
 
 

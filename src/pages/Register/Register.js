@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import axios from 'axios';
-import ip from "../../config/Ip";
+import ip from "../../config/Ip"
+import Spinner from "../Shared/Spinner"
 
 function Register(props) {
     const [firstName, setFirstName] = useState('');
@@ -14,6 +15,7 @@ function Register(props) {
     const [passwordError, setPasswordError] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
     const [usernameError, setUsernameError] = useState('');
+    const [isSending, setIsSending] = useState(false);
 
     const validatePassword = (value) => {
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()_+\\[\]{};':"\\|,.<>\/?~`-]{8,}$/;
@@ -45,11 +47,9 @@ function Register(props) {
     }
 
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Zresetuj błąd
         setError("");
 
         // Walidacja wszystkich pól
@@ -76,7 +76,7 @@ function Register(props) {
         }
 
         try {
-            // Wysyłanie żądania
+            setIsSending(true)
             await axios.post(ip + '/api/register/', {
                 first_name: firstName,
                 last_name: lastName,
@@ -84,16 +84,28 @@ function Register(props) {
                 email,
                 password
             });
-
-            // Przekierowanie po udanej rejestracji
             window.location.href = "/login?registered=true";
         } catch (error) {
+            setIsSending(false)
+
             // Obsługa błędów z serwera
             if (error.response && error.response.data) {
-                console.error(error.response.data);
+                if(error.response.username==="")
+                {
+
+                }
+                console.log(error.response.data)
 
                 if (error.response.data.username) {
-                    setError(error.response.data.username);
+                    if(error.response.data.username[0]==="A user with that username already exists.")
+                    {
+                        setError("Użytkownik z takim loginem już istnieje.");
+
+                    }else
+                    {
+                        setError(error.response.data.username);
+
+                    }
                 } else {
                     setError('Wystąpił nieoczekiwany błąd.');
                 }
@@ -111,7 +123,6 @@ function Register(props) {
             <div className="mt-10">Dołącz do nas</div>
             <form onSubmit={handleSubmit} className=" rounded px-8 pt-6 mb-4">
 
-                {/* First Name */}
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm mb-2" htmlFor="firstName">
                         Imię
@@ -122,7 +133,6 @@ function Register(props) {
                         value={firstName} onChange={(e) => setFirstName(e.target.value)}/>
                 </div>
 
-                {/* Last Name */}
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm mb-2" htmlFor="lastName">
                         Nazwisko
@@ -158,7 +168,7 @@ function Register(props) {
                         value={email}
                         onBlur={handleEmailBlur}
                         value={email} onChange={(e) => setEmail(e.target.value)}
-                        />
+                    />
                     {emailError && <p className="text-red-500 text-xs italic">{emailError}</p>}
                 </div>
 
@@ -192,31 +202,19 @@ function Register(props) {
 
                 {error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}
                 <div className="flex items-center justify-between">
+                    {isSending ? <div className = "m-auto"><Spinner /></div>:
                     <button
                         className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue m-auto"
                         type="submit">
                         Zarejestruj się
                     </button>
+                        }
                 </div>
             </form>
 
-            {/*
-            <button
-                onClick={props.handleBackClick}
-                className="absolute top-80 left-[-50px]  transform -translate-y-1/2 -translate-x-full bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded flex items-center"
-            >
-                <div className=" text-white py-2 px-4 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                              d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                    </svg>
-                    <span className="mr-2">Logowanie</span>
 
-                </div>
-            </button>
-*/}
-            <div className="mt-4 pb-10 w-[300px] flex justify-center items-center m-auto sm:absolute top-[720px] right-[173px] sm:right-[100px] sm:top-[603px] md:right-[100px] md:top-[603px]  lg:left-[-700px] lg:top-[350px] ">
+            <div
+                className="mt-4 pb-10 w-[300px] flex justify-center items-center m-auto sm:absolute top-[720px] right-[173px] sm:right-[100px] sm:top-[603px] md:right-[100px] md:top-[603px]  lg:left-[-700px] lg:top-[350px] ">
                 <button
                     onClick={props.handleBackClick}
                     className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center lg:px-8 lg:py-4 lg:rounded-lg"

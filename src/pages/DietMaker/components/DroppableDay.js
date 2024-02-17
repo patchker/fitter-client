@@ -50,7 +50,7 @@ function DroppableDay({
     const isWithinDietPlan = currentDate >= dietStart && currentDate <= dietEnd;
 
     if (!isWithinDietPlan) {
-        return null; // Or some other placeholder indicating this is not a diet day
+        return null;
     }
 
     function isToday(date) {

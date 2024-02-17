@@ -37,7 +37,8 @@ import AddMeasurement from './pages/Body/components/AddMeasurement';
 import Trainings from './pages/Body/components/Trainings';
 import Ingredients from "./pages/DietCalendar/components/Ingredients";
 import MealAI from "./pages/DietCalendar/MealAI";
-import Confirm from './pages/Register/Confirm'; // Zaimportuj swój komponent weryfikacji
+import Confirm from './pages/Register/Confirm';
+import { BrowserRouter } from 'react-router-dom';
 
 import { TrainingProvider } from './contexts/TrainingContext';
 
@@ -61,7 +62,7 @@ const ProtectedIngredients = withAuthProtection(Ingredients);
 //const [orderPlaced, setOrderPlaced] = useState(false);
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   useEffect(() => {
     const password = localStorage.getItem('password');
@@ -88,7 +89,8 @@ function App() {
       <Helmet>
         <title>Fitter</title>
       </Helmet>
-      <Router>
+      <Router basename="/works/fitter">
+
 
         <div className="min-h-screen flex flex-col font-poppins">
           <OrderProvider>
@@ -109,7 +111,7 @@ function App() {
             <Route path="/OrderList" element={<ProtectedOrderList />} />
             <Route path="/UserList" element={<ProtectedUserList />} />
             <Route path="/DietCalendar" element={<ProtectedDietCalendar />} />
-            <Route path="/dietmaker/:nick" element={<ProtectedDietMaker />} />
+            <Route path="/dieteditor/:nick" element={<ProtectedDietMaker />} />
             <Route path="/PurchaseDiet/:planType" element={<PaymentProvider><ProtectedPurchaseDiet /></PaymentProvider>} />
             <Route path="/recipe/:id" element={<ProtectedRecipeDetail />} />
             <Route path="/dietconfig" element={<ProtectedDietConfig />} />
@@ -148,9 +150,9 @@ function Login2({ onLogin }) {
   };
 
   return (
-      <div className="flex justify-center items-center mt-40"> {/* Wyśrodkowanie formularza na całej dostępnej wysokości */}
-        <form onSubmit={handleSubmit} className="w-full max-w-xs"> {/* Ustawienie maksymalnej szerokości formularza */}
-          <div className="flex flex-col items-center mb-6"> {/* Wyśrodkowanie tekstu wewnątrz formularza */}
+      <div className="flex justify-center items-center mt-40">
+        <form onSubmit={handleSubmit} className="w-full max-w-xs">
+          <div className="flex flex-col items-center mb-6">
             <span className="font-masque text-6xl mb-2">FITTER</span>
             <span>Autoryzacja</span>
           </div>

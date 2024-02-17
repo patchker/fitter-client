@@ -3,10 +3,8 @@ import React, {useState, useEffect, useRef, useContext} from 'react';
 import {useLocation, Link, useNavigate} from 'react-router-dom';
 import axios from "axios";
 import ip from '../../config/Ip'
-import {FaBars, FaWindowClose} from "react-icons/fa";
+import {FaBars} from "react-icons/fa";
 import {FaXmark} from "react-icons/fa6";
-
-import {usePayment} from '../../contexts/PaymentContext';
 import {OrderPlacedContext} from '../../contexts/orderPlacedContext';
 
 function Header() {
@@ -21,9 +19,9 @@ function Header() {
     const [isLoading, setIsLoading] = useState(false);
     const {orderPlaced, setOrderPlaced} = useContext(OrderPlacedContext);
 
-    console.log("AAAAA", currentRole)
+
     useEffect(() => {
-        console.log("ORder placed");
+
         if (orderPlaced) {
             setDietPath("/dietcalendar");
 
@@ -34,7 +32,6 @@ function Header() {
 
     }, [orderPlaced]);
 
-    console.log("orderPlaced", orderPlaced)
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
@@ -45,11 +42,11 @@ function Header() {
                     'Authorization': `Bearer ${userToken}`
                 }
             });
-            console.log("Fetching orders response", response.data)
-            if (response.data.length === 0) {
+
+
+            if (response.data.length === 0)  {
                 setDietPath("/dieta")
                 return null;
-
             }
             return response.data;
         } catch (error) {
@@ -81,13 +78,19 @@ function Header() {
                 const userToken = localStorage.getItem('access_token');
                 const orders = await fetchOrders(userToken);
 
-                if (orders && orders.some(order => {
+                if (orders && orders.length > 0) {
+                    const lastOrder = orders[orders.length - 1];
                     const currentDate = new Date();
-                    const startDate = new Date(order.data_rozpoczecia);
-                    const endDate = new Date(order.data_zakonczenia);
-                    return currentDate >= startDate && currentDate <= endDate;
-                })) {
-                    setDietPath("/dietcalendar");
+                    const startDate = new Date(lastOrder.data_rozpoczecia);
+                    const endDate = new Date(lastOrder.data_zakonczenia);
+
+                    endDate.setHours(23, 59, 59, 999);
+
+                    if (currentDate >= startDate && currentDate <= endDate) {
+                        setDietPath("/dietcalendar");
+                    } else {
+                        setDietPath("/dieta");
+                    }
                 } else {
                     setDietPath("/dieta");
                 }
@@ -122,7 +125,7 @@ function Header() {
         <header className="bg-white text-black shadow-md">
             <div className="container mx-auto flex justify-between items-center">
                 <Link to="/" class="flex items-center">
-                    <img src="../logo2.png" className="w-12"/>
+                    <img src="./logo2.png" className="w-12"/>
                     <h1 className="text-2xl font-bold font-masque ml-3l">Fitter</h1>
                 </Link>
 
@@ -173,18 +176,21 @@ function Header() {
                                         className="cursor-pointer">{currentUser}</span></div>
                                     {isMenuVisible && (<div
                                         className=" z-10 absolute  left-1/2 transform -translate-x-1/2 bg-white border p-1 rounded shadow w-full ">
-                                        <Link to="/UserProfile" className="block mb-2 hover:underline 0 bg-gray-300 rounded p-2  text-black"
+                                        <Link to="/UserProfile"
+                                              className="block mb-2 hover:underline 0 bg-gray-300 rounded p-2  text-black"
                                               onClick={() => setIsMenuOpen(false)}>Mój profil</Link>
-                                        <Link to="/OrderList" className="block mb-2 hover:underline bg-gray-300 rounded p-2 text-black"
+                                        <Link to="/OrderList"
+                                              className="block mb-2 hover:underline bg-gray-300 rounded p-2 text-black"
                                               onClick={() => setIsMenuOpen(false)}>Zamówienia</Link>
                                         <button onClick={() => {
                                             handleLogout();
                                             setIsMenuOpen(false);
-                                        }} className="hover:underline w-full text-red-500 bg-gray-300 rounded p-2">Wyloguj
+                                        }}
+                                                className="hover:underline w-full text-red-500 bg-gray-300 rounded p-2">Wyloguj
                                         </button>
                                     </div>)}
                                 </div>) : (<Link to="/login"
-                                                 className={`hover:underline ${isMenuOpen ? 'bg-gray-300 text-black  ':'bg-gray-600 text-white'}  pl-5 pr-5 p-1 rounded `}
+                                                 className={`hover:underline ${isMenuOpen ? 'bg-gray-300 text-black  ' : 'bg-gray-600 text-white'}  pl-5 pr-5 p-1 rounded `}
                                                  onClick={() => setIsMenuOpen(false)}>Login</Link>)}
                             </div>
                         </li>

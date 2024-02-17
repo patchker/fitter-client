@@ -5,8 +5,8 @@ import Content from "./Content";
 function HomePage() {
     return (
         <div>
-            <Banner />
-            <Content />
+            <Banner/>
+            <Content/>
         </div>
     );
 }

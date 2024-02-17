@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import Spinner from '../../Shared/Spinner';
-import { useLocation } from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import ip from "../../../config/Ip";
 
 function Ingredients() {
@@ -9,6 +9,7 @@ function Ingredients() {
     const [ingredients, setIngredients] = useState([]);
     const location = useLocation();
     const [currentWeekStart, setCurrentWeekStart] = useState();
+    const [hasGenerated, setHasGenerated] = useState(false);
 
     useEffect(() => {
         if (location.state && location.state.currentWeekStart) {
@@ -34,6 +35,8 @@ function Ingredients() {
         }).then(response => {
             setIsLoading(false);
             setIngredients(response.data.ingredients);
+            setHasGenerated(true);
+
         }).catch(error => {
             setIsLoading(false);
             console.log("Błąd z generacji", error);
@@ -53,20 +56,31 @@ function Ingredients() {
                     </button>
                 </div>
             )}
-            {isLoading && <Spinner />}
+            {isLoading && <Spinner/>}
             {ingredients.length > 0 && (
                 <div>
-                    <h2 className="text-2xl font-semibold mb-3">Składniki na tydzień {formatDate(currentWeekStart)} - {formatDate(new Date(currentWeekStart).setDate(currentWeekStart.getDate() + 6))}</h2>
+                    <h2 className="text-2xl font-semibold mb-3">Składniki na
+                        tydzień {formatDate(currentWeekStart)} - {formatDate(new Date(currentWeekStart).setDate(currentWeekStart.getDate() + 6))}</h2>
                     <ul className="list-none">
                         {ingredients.map((ingredient, index) => (
                             <li key={index} className="bg-gray-100 p-4 my-2 rounded flex justify-between items-center">
                                 <span className="font-bold">{ingredient.ingredient__name}</span>
-                                <span className="italic">{ingredient.total_quantity} {ingredient.ingredient__measurement_unit}</span>
+                                <span
+                                    className="italic">{ingredient.total_quantity} {ingredient.ingredient__measurement_unit}</span>
                             </li>
                         ))}
                     </ul>
                 </div>
             )}
+
+            {ingredients.length === 0 && !isLoading && hasGenerated && (
+
+                <div>
+                    <h2 className="text-2xl font-semibold mb-3 mt-20">Brak składników na ten tydzień.</h2>
+
+                    <div className="text-center">Wybierz inny tydzień aby wygenerować składniki.</div>
+                </div>)}
+
         </div>
     );
 }

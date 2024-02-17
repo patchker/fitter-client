@@ -3,7 +3,7 @@
         transform: translateY(0);
     }
     25%, 75% {
-        transform: translateY(-30px); /* Dostosuj wartość */
+        transform: translateY(-30px);
     }
     50% {
         transform: translateY(0);
@@ -11,26 +11,27 @@
 }
 
 .lift-barbell {
-    animation: liftBarbell 2s ease-in-out 1 forwards; /* Zmieniłem czas na 4s i dodano 1 iterację */
+    animation: liftBarbell 2s ease-in-out 1 forwards;
 }
 
 
-/* Animation.css */
 .whiteText {
     color: white;
-    text-shadow: 2px 2px 4px #000000; /* Cień czarny, z lekkim rozmyciem */
+    text-shadow: 2px 2px 4px #000000;
 
 
 }
+
 .whiteText2 {
     color: white;
-    text-shadow: 2px 2px 4px #000000; /* Cień czarny, z lekkim rozmyciem */
-    -webkit-text-stroke: 2px black; /* szerokość i kolor obramowania */
+    text-shadow: 2px 2px 4px #000000;
+    -webkit-text-stroke: 2px black;
 
 
 }
+
 .outlinedText {
-    -webkit-text-stroke: 1px black; /* szerokość i kolor obramowania */
+    -webkit-text-stroke: 1px black;
     color: transparent;
 
 }
@@ -38,14 +39,14 @@
 .blackText {
     color: black;
 }
-/* Style dla większych ekranów */
+
 @media (min-width: 601px) {
     .bannerText {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        font-size: 4vw; /* Dostosuj rozmiar tekstu */
+        font-size: 4vw;
     }
 
     .bannerContainer {

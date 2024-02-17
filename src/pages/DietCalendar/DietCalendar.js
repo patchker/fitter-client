@@ -12,13 +12,12 @@ function DietSchedule() {
     const {logout} = useAuth();
     const navigate = useNavigate();
     const [animationClass, setAnimationClass] = useState('');
-    const [orderInfo, setOrderInfo] = useState(null); // Nowy stan dla przechowywania informacji o zamówieniu
-    const [isLoading, setIsLoading] = useState(false); // Nowy stan
-    const [preferences, setPreferences] = useState(''); // Nowy stan
+    const [orderInfo, setOrderInfo] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [preferences, setPreferences] = useState('');
     const [dietData, setDietData] = useState([]);
     const [currentWeekStart, setCurrentWeekStart] = useState(getMonday(new Date()));
-    const [numberOfDaysToShow, setNumberOfDaysToShow] = useState(0);
-    const [isLoading2, setIsLoading2] = useState(true); // Now set to true by default
+    const [isLoading2, setIsLoading2] = useState(true);
     const { orderPlaced, setOrderPlaced, setOrder } = useContext(OrderPlacedContext);
 
 
@@ -246,14 +245,14 @@ function DietSchedule() {
 
 
 
-    if (orderInfo && orderInfo.status === "pending") {
+    if (orderInfo && (orderInfo.status === "pending" || orderInfo.status === "Pending" || orderInfo.status === "new" || orderInfo.status === "New")) {
         return (
             <div className="flex flex-col items-center justify-center h-screen bg-gray-100 p-4 pt-0">
                 <div className="bg-white shadow-xl rounded-lg p-8 max-w-sm w-full">
                     <h2 className="text-2xl font-semibold text-center text-gray-800 mb-4">Dieta w trakcie tworzenia</h2>
                     <p className="text-center text-gray-600 mb-6">Twoja indywidualna dieta jest obecnie przygotowywana. Oto szczegóły:</p>
                     <div className="mb-4">
-                        <h3 className="text-lg font-medium text-gray-700">Identyfikator diety:</h3>
+                        <h3 className="text-lg font-medium text-gray-700">Identyfikator zamówienia:</h3>
                         <p className="text-gray-500">{orderInfo.id}</p>
                     </div>
                     <div className="mb-4">
@@ -270,7 +269,29 @@ function DietSchedule() {
         );
     }
 
+    if (orderInfo && (orderInfo.status === "Cancelled" || orderInfo.status === "cancelled") ){
+        return (
+            <div className="flex flex-col items-center justify-center h-screen bg-gray-100 p-4 pt-0">
+                <div className="bg-white shadow-xl rounded-lg p-8 max-w-sm w-full">
+                    <h2 className="text-xl font-semibold text-center text-gray-800 mb-4">Zamówienie zostało anulowane.</h2>
+                    <p className="text-center text-gray-600 mb-6"><p>Skontaktuj się z administracją.</p> Oto szczegóły:</p>
+                    <div className="mb-4">
+                        <h3 className="text-lg font-medium text-gray-700">Identyfikator zamówienia:</h3>
+                        <p className="text-gray-500">{orderInfo.id}</p>
+                    </div>
+                    <div className="mb-4">
+                        <h3 className="text-lg font-medium text-gray-700">Data rozpoczęcia:</h3>
+                        <p className="text-gray-500">{formatDate(orderInfo.start_date)}</p>
+                    </div>
+                    <div className="mb-6">
+                        <h3 className="text-lg font-medium text-gray-700">Data zakończenia:</h3>
+                        <p className="text-gray-500">{formatDate(orderInfo.end_date)}</p>
+                    </div>
 
+                </div>
+            </div>
+        );
+    }
 
     if (isLoading2) {
         return <div>Loading...</div>;
@@ -281,7 +302,7 @@ function DietSchedule() {
     }
 
     return (
-               <div className="flex flex-col items-center p-4 mt-8">
+        <div className="flex flex-col items-center p-4 mt-8">
             <div className="flex flex-col md:flex-row w-full  justify-between items-center mb-4">
                 <h1 className="text-3xl font-bold text-center mb-4 md:mb-0 md:mr-4">Twój plan diety na ten tydzień</h1>
 
@@ -289,7 +310,7 @@ function DietSchedule() {
                         className="bg-emerald-500 text-white px-4 py-2 rounded md:self-start"
                 >
 
-Lista składników
+                    Lista składników
                 </button>
             </div>
 
@@ -306,19 +327,19 @@ Lista składników
 
 
             <div className={`grid ${getGridTemplateColumns()} gap-4 w-full h-auto mt-8 ${animationClass}`}>                {days.map((day, index) => {
-                    const dayDate = new Date(new Date(currentWeekStart).setDate(currentWeekStart.getDate() + index));
-                    if (isWithinOrderDate(dayDate)) {
-                        return (
-                            <DayCard
-                                key={index}
-                                day={day}
-                                date={getDayDate(index)}
-                                meals={dietData[formatDate(dayDate)] || []}
-                                isToday={isToday(dayDate)}
-                            />
-                        );
-                    }
-                })}
+                const dayDate = new Date(new Date(currentWeekStart).setDate(currentWeekStart.getDate() + index));
+                if (isWithinOrderDate(dayDate)) {
+                    return (
+                        <DayCard
+                            key={index}
+                            day={day}
+                            date={getDayDate(index)}
+                            meals={dietData[formatDate(dayDate)] || []}
+                            isToday={isToday(dayDate)}
+                        />
+                    );
+                }
+            })}
             </div>
         </div>
     );

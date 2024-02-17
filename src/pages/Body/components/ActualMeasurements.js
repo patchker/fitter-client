@@ -5,12 +5,9 @@ import "./ActualMeasurements.css"
 import {useNavigate} from "react-router-dom";
 
 function ActualMeasurements() {
-    // State to store measurements data
     const [measurements, setMeasurements] = useState([]);
-    const [newMeasurement, setNewMeasurement] = useState({ date: '', waist: '', chest: '', bicep: '', thigh: '' });
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [measurementToDelete, setMeasurementToDelete] = useState(null);
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isTodayMeasured, setIsTodayMeasured] = useState(false);
 
     const navigate = useNavigate();
@@ -20,7 +17,6 @@ function ActualMeasurements() {
         setMeasurementToDelete(measurementId);
     };
 
-    // Updated to perform the actual deletion
     const confirmDelete = async () => {
         if (measurementToDelete != null) {
             try {
@@ -41,20 +37,11 @@ function ActualMeasurements() {
         setMeasurementToDelete(null);
     };
 
-    const handleInputChange = (e) => {
-        setNewMeasurement({ ...newMeasurement, [e.target.name]: e.target.value });
-    };
 
-    // Updated to show the add modal
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setIsAddModalOpen(true);
-    };
-    // Fetch measurements data from Django backend on component mount
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const token = localStorage.getItem("access_token"); // Replace with your actual token key
+                const token = localStorage.getItem("access_token");
                 const headers = {
                     Authorization: `Bearer ${token}`
                 };
@@ -78,44 +65,6 @@ function ActualMeasurements() {
     }, [measurements]);
 
 
-    const confirmAddMeasurement = async () => {
-        try {
-            const token = localStorage.getItem("access_token");
-            const headers = { Authorization: `Bearer ${token}` };
-            const response = await axios.post(`${Ip}/api/measurements/`, newMeasurement, { headers });
-            setMeasurements([...measurements, response.data]);
-            setNewMeasurement({ date: '', waist: '', chest: '', bicep: '', thigh: '' }); // Reset form
-        } catch (error) {
-            console.error("Error adding measurement: ", error);
-        }
-        setIsAddModalOpen(false);
-    };
-
-    const cancelAdd = () => {
-        setIsAddModalOpen(false);
-    };
-
-    const handleSubmit2 = async (e) => {
-        e.preventDefault();
-        setIsAddModalOpen(true);
-    };
-
-
-    const deleteMeasurement = async (measurementId) => {
-        if (window.confirm("Are you sure you want to delete this measurement?")) {
-            try {
-
-                const token = localStorage.getItem("access_token");
-                const headers = { Authorization: `Bearer ${token}` };
-                await axios.delete(`${Ip}/api/measurements/${measurementId}/`, { headers });
-
-                // Update the state to reflect the deletion
-                setMeasurements(measurements.filter(measurement => measurement.id !== measurementId));
-            } catch (error) {
-                console.error("Error deleting measurement: ", error);
-            }
-        }
-    };
 
     return (
         <div className="measurements-container p-4">

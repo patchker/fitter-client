@@ -2,8 +2,7 @@ import {useDrag} from "react-dnd";
 import React, {useEffect} from "react";
 import "./DraggableMeal.css"
 import {Tooltip} from 'react-tooltip';
-import {FaFish} from 'react-icons/fa'
-import SetMealIcon from '@mui/icons-material/SetMeal';
+
 function DraggableMeal({meal, mealType, onDragStart, onDragEnd, onDoubleClick}) {
     const [{isDragging}, drag] = useDrag(() => ({
         type: 'MEAL',
@@ -22,26 +21,10 @@ function DraggableMeal({meal, mealType, onDragStart, onDragEnd, onDoubleClick}) 
         }
     }, [isDragging, meal, mealType, onDragStart]);
 
-    const getAllergenClass = (meal) => {
-        if (meal.lactose_free && meal.nut_free && meal.soy_free && meal.gluten_free && meal.fish_free) {
-            return 'no-allergens';
-        } else {
-            let classes = '';
-            if (meal.lactose_free) classes += ' lactose-free';
-            if (meal.nut_free) classes += ' nut-free';
-            if (meal.soy_free) classes += ' soy-free';
-            if (meal.gluten_free) classes += ' gluten-free';
-            if (meal.fish_free) classes += ' fish-free';
-            return classes.trim();
-        }
-    };
 
-    const allergenClass = getAllergenClass(meal);
+
     const allergenIndicators = [];
-    const tooltipVisibility = isDragging ? 'hidden' : 'visible';
-    const tooltipStyle = isDragging ? {display: 'none'} : {};
 
-    // Wewnątrz komponentu DraggableMeal
     if (meal.lactose_free && !isDragging) {
         allergenIndicators.push(
             <span>
@@ -103,10 +86,6 @@ function DraggableMeal({meal, mealType, onDragStart, onDragEnd, onDoubleClick}) 
         );
 
     }
-
-
-
-
 
 
     return (

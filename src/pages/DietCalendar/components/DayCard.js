@@ -24,7 +24,6 @@ function DayCard({day, date, meals, isToday}) {
 
 
     const mealsByTimeAndType = meals.reduce((acc, meal) => {
-        // Klucz do grupowania to czas i typ posiłku
         const key = `${meal.time}-${meal.type}`;
         if (!acc[key]) {
             acc[key] = {

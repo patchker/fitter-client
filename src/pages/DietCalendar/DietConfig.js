@@ -38,7 +38,6 @@ const DietConfigurator = ({onSubmit}) => {
         setDislikes(dislikes.includes(dish) ? dislikes.filter(item => item !== dish) : [...dislikes, dish]);
     };
 
-    const [likes, setLikes] = useState([]);
     const [dislikes, setDislikes] = useState([]);
     const [preferences, setPreferences] = useState({
         gluten_free: false,
@@ -47,6 +46,33 @@ const DietConfigurator = ({onSubmit}) => {
         fish_free: false,
         soy_free: false,
     });
+
+    const [gender, setGender] = useState('male');
+    const [age, setAge] = useState('');
+    const [weight, setWeight] = useState('');
+    const [height, setHeight] = useState('');
+    const [activityLevel, setActivityLevel] = useState('low');
+    const isFormValid = gender !== '' && age !== '' && weight !== '' && height !== '' && activityLevel !== '';
+
+    const handleGenderChange = (e) => {
+        setGender(e.target.value);
+    };
+
+    const handleAgeBlur = (e) => {
+        setAge(e.target.value);
+    };
+
+    const handleWeightBlur = (e) => {
+        setWeight(e.target.value);
+    };
+    const handleHeightBlur = (e) => {
+        setHeight(e.target.value);
+    };
+
+    const handleActivityLevelChange = (e) => {
+        setActivityLevel(e.target.value);
+    };
+
     const navigate = useNavigate();
 
     const handleNext = (event) => {
@@ -91,13 +117,22 @@ const DietConfigurator = ({onSubmit}) => {
         const accessToken = localStorage.getItem('access_token');
         const apiEndpoint = Ip + '/api/diet-preferences/';
         const diet_id = state.orderInfo.dieta
+        const orderID = state.orderInfo.id
+
+
         axios.post(apiEndpoint, {
             diet_id,
             diet_type,
+            orderID,
             mealCount,
             preferences,
             foodPreferences,
             preferences_set: true,
+            gender,
+            age,
+            weight,
+            height,
+            activityLevel,
 
         }, {
             headers: {
@@ -138,7 +173,6 @@ const DietConfigurator = ({onSubmit}) => {
         'nut_free': 'Bez orzechów',
         'fish_free': 'Bez ryb',
         'soy_free': 'Bez soi',
-        // Dodaj tutaj inne mapowania
     };
     return (
         <div>
@@ -166,6 +200,7 @@ const DietConfigurator = ({onSubmit}) => {
                                     <option value="standard">Standardowa</option>
                                     <option value="vegetarian">Wegetariańska</option>
                                     <option value="vegan">Wegańska</option>
+                                    <option value="lowIG">Dieta z niskim IG</option>
                                 </select>
                             </div>
 
@@ -197,7 +232,7 @@ const DietConfigurator = ({onSubmit}) => {
                                             onChange={handlePreferenceChange}
                                         />
                                         <span className="ml-2 text-gray-700">
-                    {preferencesMapping[key] || key} {/* Użyj mapowania lub domyślnego klucza */}
+                    {preferencesMapping[key] || key}
                 </span>
                                     </label>
                                 ))}
@@ -221,7 +256,7 @@ const DietConfigurator = ({onSubmit}) => {
 
                         <div className="flex justify-end mt-6">
                             <button
-                                className="px-6 py-2 text-sm font-bold text-white transition-colors duration-200 transform bg-indigo-500 rounded-md hover:bg-indigo-700 focus:outline-none focus:bg-indigo-600"
+                                className="px-6 py-2 text-sm font-bold text-white transition-colors duration-200 transform bg-emerald-500 rounded-md hover:bg-emerald-700 focus:outline-none focus:bg-emerald-600"
                                 onClick={handleNext}
                             >
                                 Dalej
@@ -270,18 +305,20 @@ const DietConfigurator = ({onSubmit}) => {
 
                         <div className="flex justify-between mt-6">
                             <button
-                                className="px-6 py-2 text-sm font-bold text-white transition-colors duration-200 transform bg-gray-500 rounded-md hover:bg-gray-700 focus:outline-none focus:bg-gray-600"
+                                className="px-6 h-9 mt-6 text-sm font-bold text-white transition-colors duration-200 transform bg-gray-500 rounded-md hover:bg-gray-700 focus:outline-none focus:bg-gray-600"
                                 onClick={handlePrev}
                             >
                                 Wstecz
                             </button>
-                            <button
-                                type="submit"
-                                disabled={!allPreferencesSelected()} // Wyłącz przycisk, jeśli nie wszystkie preferencje są wybrane
-                                className={`px-6 py-2 text-sm font-bold text-white transition-colors duration-200 rounded transform ${allPreferencesSelected() ? 'bg-indigo-500 hover:bg-indigo-700 focus:outline-none focus:bg-indigo-600' : 'bg-gray-500'}`}
-                            >
-                                Dalej
-                            </button>
+
+                            <div className="flex justify-end mt-6">
+                                <button
+                                    className="px-6 py-2 text-sm font-bold text-white transition-colors duration-200 transform bg-emerald-500 rounded-md hover:bg-emerald-700 focus:outline-none focus:bg-emerald-600"
+                                    onClick={handleNext}
+                                >
+                                    Dalej
+                                </button>
+                            </div>
                         </div>
 
                     </form>
@@ -293,32 +330,59 @@ const DietConfigurator = ({onSubmit}) => {
                 <div className="max-w-4xl mx-auto p-8">
                     <h2 className="text-7xl font-masque text-gray-900 mb-20 text-center">WITAMY W EKIPIE!</h2>
 
-                    <form onSubmit={handleFinalSubmit}
+                    <form onSubmit={handleSubmit}
                           className="bg-gray-50 shadow-2xl rounded-3xl px-8 pt-6 pb-8 border border-gray-100">
-
-                        <h2 className="text-3xl font-semibold text-gray-900 mb-6 text-center">Twoje preferencje
-                            kulinarne</h2>
+                        <h2 className="text-3xl font-semibold text-gray-900 mb-6 text-center">Powiedz nam coś o
+                            sobie.</h2>
 
                         <div className="mb-6">
-                            <h3 className="text-xl font-semibold text-gray-900 mb-4">Czego nie lubisz jeść?</h3>
+                            {/* Płeć */}
+                            <label className="block mb-2 text-sm font-medium text-gray-900">Płeć</label>
+                            <select
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                onChange={handleGenderChange}
+                            >
+                                <option value="male">Mężczyzna</option>
+                                <option value="female">Kobieta</option>
+                            </select>
 
-                            {/* Lista dań, których użytkownik nie lubi */}
-                            <div>
-                                {dislikedDishes.map((dish, index) => (
-                                    <label key={index} className="block mb-2">
-                                        <input
-                                            type="checkbox"
-                                            className="form-checkbox h-5 w-5 text-red-600"
-                                            value={dish}
-                                            onChange={handleDislikedFoodChange}
-                                            checked={dislikes.includes(dish)}
-                                        />
-                                        <span className="ml-2 text-gray-700">{dish}</span>
-                                    </label>
-                                ))}
-                            </div>
+                            {/* Wiek */}
+                            <label className="block mt-4 mb-2 text-sm font-medium text-gray-900">Wiek</label>
+                            <input
+                                type="number"
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                onBlur={handleAgeBlur}
+                            />
+
+                            {/* Waga */}
+                            <label className="block mt-4 mb-2 text-sm font-medium text-gray-900">Waga (kg)</label>
+                            <input
+                                type="number"
+                                step="0.1"
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                onBlur={handleWeightBlur}
+                            />
+
+                            {/* Wzrost */}
+                            <label className="block mt-4 mb-2 text-sm font-medium text-gray-900">Wzrost (cm)</label>
+                            <input
+                                type="number"
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                onBlur={handleHeightBlur}
+                            />
+
+                            {/* Poziom aktywności fizycznej */}
+                            <label className="block mt-4 mb-2 text-sm font-medium text-gray-900">Poziom aktywności
+                                fizycznej</label>
+                            <select
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                onChange={handleActivityLevelChange} // Użyj `onChange` zamiast `onBlur`
+                            >
+                                <option value="low">Niska</option>
+                                <option value="medium">Średnia</option>
+                                <option value="high">Wysoka</option>
+                            </select>
                         </div>
-
                         {/* Przyciski nawigacyjne */}
                         <div className="flex justify-between mt-6">
                             <button
@@ -327,10 +391,13 @@ const DietConfigurator = ({onSubmit}) => {
                             >
                                 Wstecz
                             </button>
+
+
                             <button
-                                className="px-6 py-2 text-sm font-bold text-white transition-colors duration-200 transform bg-indigo-500 rounded-md hover:bg-indigo-700 focus:outline-none focus:bg-indigo-600"
                                 type="submit"
-                                onClick={handleSubmit}
+                                disabled={!isFormValid}
+
+                                className={`px-6 py-2 text-sm font-bold text-white transition-colors duration-200 rounded transform ${isFormValid ? 'bg-emerald-500 hover:bg-emerald-700 focus:outline-none focus:bg-emerald-600' : 'bg-gray-500'}`}
                             >
                                 Zapisz i prześlij
                             </button>

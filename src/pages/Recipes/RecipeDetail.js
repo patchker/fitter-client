@@ -20,14 +20,16 @@ function RecipeDetail() {
 
         fetchData();
     }, [mealId]);
+
     const renderTextWithLineBreaks = (text) => {
         if (!text) {
-            return <span>Brak danych</span>; // Możesz tu wyświetlić dowolny komunikat lub zwrócić null
+            return <span>Brak danych</span>;
         }
         return text.split('\n').map((item, key) => {
             return <span key={key}>{item}<br/></span>;
         });
     }
+
 
     return (
         <div className="container mx-auto px-4 my-10">

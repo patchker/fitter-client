@@ -1,12 +1,59 @@
-import React, {useState} from 'react';
-import {Link} from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import OfferCard from "./components/OfferCard"
 import FAQItem from "./components/FAQItem"
+import axios from "axios";
+import ip from "../../config/Ip";
 
 
 function Dieta() {
     const [selectedOffer, setSelectedOffer] = useState(null);
     const [openQuestion, setOpenQuestion] = useState(null);
+
+    const navigate = useNavigate();
+
+    const fetchOrders = async (userToken) => {
+        try {
+            const response = await axios.get(ip + '/api/user_orders/', {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                }
+            });
+
+
+
+            return response.data;
+        } catch (error) {
+            console.error('There was an error fetching the orders!', error);
+            return null;
+        }
+    };
+
+    useEffect(() => {
+
+        const checkSubscription = async ()=>
+        {
+            const userToken = localStorage.getItem('access_token');
+
+            const orders = await fetchOrders(userToken);
+
+            if (orders && orders.length > 0) {
+                const lastOrder = orders[orders.length - 1];
+                const currentDate = new Date();
+                const startDate = new Date(lastOrder.data_rozpoczecia);
+                const endDate = new Date(lastOrder.data_zakonczenia);
+                endDate.setHours(23, 59, 59, 999);
+
+                if (currentDate >= startDate && currentDate <= endDate) {
+                    navigate("/dietcalendar");
+                }
+            }
+        }
+
+
+checkSubscription();
+
+    }, [])
 
 
     const offers = [

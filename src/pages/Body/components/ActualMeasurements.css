@@ -27,9 +27,9 @@
     padding: 5px 0;
     position: absolute;
     z-index: 70;
-    bottom: 100%; /* Position it above the button */
+    bottom: 100%;
     left: 40%;
-    transform: translateX(-50%); /* Center horizontally */
+    transform: translateX(-50%);
     opacity: 0;
     transition: opacity 0.3s;
     width: 290px;

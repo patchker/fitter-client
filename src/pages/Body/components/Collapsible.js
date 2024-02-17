@@ -31,8 +31,8 @@ const Collapsible = ({ training }) => {
 
 
     return (
-        <div className="flex items-center justify-center"> {/* Zapewnia wyśrodkowanie w pionie i poziomie na całej wysokości ekranu */}
-            <div className="max-w-[700px] w-full mx-auto"> {/* Ogranicza szerokość i wyśrodkowuje w poziomie */}
+        <div className="flex items-center justify-center">
+            <div className="max-w-[700px] w-full mx-auto">
                 <div className="border border-gray-300 rounded-lg shadow-lg my-2 overflow-hidden">
                     <button
                         className="w-full text-center py-3 px-4 hover:bg-gradient-to-r from-gray-200 to-gray-300 font-semibold text-lg bg-gradient-to-l from-gray-100 to-gray-200 flex items-center justify-center"

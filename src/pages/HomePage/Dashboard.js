@@ -11,7 +11,7 @@ function Dashboard() {
 
     useEffect(() => {
         if (new URLSearchParams(location.search).get('logged') === 'true') {
-            setShowTooltip(true); // Pokaż dymek
+            setShowTooltip(true);
             const timer = setTimeout(() => {
                 setShowTooltip(false);
             }, 10000);
@@ -23,8 +23,8 @@ function Dashboard() {
 
     return (
         <div>
-            <Banner />
-            <Content />
+            <Banner/>
+            <Content/>
 
             {showTooltip && (
                 <div className="fixed top-10 right-0 p-4">

@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useParams} from 'react-router-dom';
 import axios from 'axios';
 import './Confirm.css';
-import ip from "../../config/Ip"; // Zaimportuj plik CSS dla tego komponentu
+import ip from "../../config/Ip";
 
 function Confirm() {
     const [statusMessage, setStatusMessage] = useState('');
-    const { token } = useParams();
+    const {token} = useParams();
 
     useEffect(() => {
         const verifyEmail = async () => {
             try {
-                const response = await axios.get(ip+`/api/verify/${token}`);
+                const response = await axios.get(ip + `/api/verify/${token}`);
                 setStatusMessage(response.data.message);
             } catch (error) {
                 setStatusMessage(

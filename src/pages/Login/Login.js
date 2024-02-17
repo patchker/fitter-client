@@ -6,6 +6,7 @@ import {useLocation} from 'react-router-dom';
 import {motion} from "framer-motion";
 import Register from '../Register/Register';
 import ip from '../../config/Ip'
+import Spinner from "../Shared/Spinner";
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -16,10 +17,11 @@ function Login() {
     const [showRegister, setShowRegister] = useState(false);
     const [showLogin, setShowLogin] = useState(true);
     const [verificationError, setVerificationError] = useState('');
+    const [isSending, setIsSending] = useState(false);
 
     const navigate = useNavigate()
     const location = useLocation();
-    console.log("showRegister",showRegister)
+
     const handleBackClick = () => {
         setShowLogin(true);
         setTimeout(() => {
@@ -49,15 +51,16 @@ function Login() {
 
     const resendVerificationEmail = async () => {
         try {
-            console.log(username)
-            await axios.post(ip + '/api/resend-verification-email/', {username},);
+            await axios.post(ip + '/api/resend-verification-email/', { username });
             alert('E-mail weryfikacyjny został ponownie wysłany.');
         } catch (error) {
-            alert('Wystąpił błąd podczas wysyłania e-maila.');
+            if (error.response) {
+                alert(error.response.data.message);
+            } else {
+                alert('Wystąpił błąd podczas wysyłania e-maila.');
+            }
         }
     };
-
-
 
 
     useEffect(() => {
@@ -69,24 +72,34 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+            if (username === undefined || username === null || password===undefined || password===null) {
+                setVerificationError("Wpisz poprawne dane.");
+
+                return false;
+            }
+
+        if ((typeof username === 'string' && username.trim().length === 0) || (typeof password === 'string' && password.trim().length === 0 )) {
+            setVerificationError("Wpisz poprawne dane.");
+
+            return false;
+        }
+
+        setIsSending(true)
         try {
             const response = await axios.post(ip + '/api/token/', {
                 username,
                 password
             });
-            console.log("SASASASASA",response.data)
             if (response.data.access) {
-                console.log("response.data",response.data)
                 localStorage.setItem('access_token', response.data.access);
                 localStorage.setItem('roles', JSON.stringify(response.data.roles));
-                console.log("response.data.roles",response.data.roles)
                 setCurrentRole(JSON.stringify(response.data.roles))
                 setCurrentUser(username);
                 navigate('/dashboard?logged=true')
             }
         } catch (err) {
+            setIsSending(false)
             if (err.response && err.response.status === 401) {
-                // Błąd weryfikacji konta
                 setVerificationError(err.response.data.detail);
                 console.log("err.response.data.detail",err.response.data.detail)
             } else {
@@ -149,11 +162,14 @@ function Login() {
 
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <button
+                                    {isSending ? <div className = "m-auto"><Spinner /></div>:
+
+                                        <button
                                         className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue m-auto"
                                         type="submit">
                                         Zaloguj
                                     </button>
+                                    }
                                 </div>
 
                                 {/* Przycisk rejestracji */}
@@ -200,7 +216,6 @@ function Login() {
                 {
                     verificationError ? (
                         verificationError === "E-mail niezweryfikowany" ? (
-                            // Blok dla specyficznego błędu "E-mail niezweryfikowany"
                             <div className="fixed top-10 right-0 p-4">
                                 <div className="bg-yellow-500 text-black p-4 rounded-xl shadow-lg flex items-center">
                                     <p>{verificationError} - </p>
@@ -209,7 +224,6 @@ function Login() {
                                 </div>
                             </div>
                         ) : (
-                            // Blok dla innych błędów niż "E-mail niezweryfikowany"
                             <div className="fixed top-10 right-0 p-4">
                                 <div className="bg-red-500 text-white p-4 rounded-xl shadow-lg flex items-center">
                                     <p>{verificationError}</p>
@@ -219,11 +233,6 @@ function Login() {
                         )
                     ) : null
                 }
-
-
-
-
-
 
 
             </div>
