@@ -1,70 +1,28 @@
-# Getting Started with Create React App
+<h1>Fitter</h1>
+<h3>Gym and Diet Tracker Web Application</h3>
+<p>The application is available at the <a href="https://patchker.com/works/fitter/">link</a>.</p>
+<p>Welcome to my Gym and Diet Tracker, a comprehensive web application designed for fitness enthusiasts and dietitians. This platform is dedicated to helping users monitor their gym progress and track dietary habits effectively. Built with a focus on user-friendly experience and functionality, my application leverages the latest in web technology to deliver a seamless and productive user experience.</p>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<img src="./fitter.png">
+<h3>Features</h3>
+<p>Training Progress Tracking: Log your workouts, track your progress over time, and set fitness goals. Intuitive interface makes it easy to keep a detailed record of your training sessions, including exercises, sets, reps, and weight lifted.
 
-## Available Scripts
+Dietary Habits Monitoring: Keep a close eye on your meal intake with our dietary tracker. Record your daily meals, track calories, and analyze the nutritional content of your food to ensure you're meeting your dietary goals.
 
-In the project directory, you can run:
+Nutritional Component Analysis: Gain insights into your eating habits with detailed breakdowns of nutritional components. My app provides comprehensive analysis of macros and micros to help you understand your diet better.
 
-### `npm start`
+Dietitian Platform: A dedicated space for dietitians to create and manage dietary plans for their clients. This feature allows diet professionals to offer personalized advice and track the dietary progress of their clients, all within the same platform.
+</p>
+<h3>Technologies</h3>
+This application is built using cutting-edge web technologies to ensure a robust and responsive user experience:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<b>Django</b>: A high-level Python Web framework that encourages rapid development and clean, pragmatic design.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+<b>REST API</b>: Utilized for seamless communication between the front-end and back-end, ensuring a smooth and efficient user experience.
 
-### `npm test`
+<b>React JS</b>: A JavaScript library for building user interfaces, React JS allows for a dynamic and responsive client-side experience.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<b>FastAPI</b> - a modern, fast web framework for building APIs with Python based on standard Python type hints. 
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<img src="dietCalendar.png">
+<img src="dietEditor.png">
