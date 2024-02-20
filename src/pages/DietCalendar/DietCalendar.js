@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import axios from 'axios';
 import './DietCalendar.css';
 import DayCard from './components/DayCard';
@@ -6,16 +6,29 @@ import {useNavigate} from 'react-router-dom';
 import {useAuth} from '../../contexts/AuthContext';
 import ip from "../../config/Ip";
 import CalendarNavigation from "./components/CalendarNavigation";
+import { OrderPlacedContext } from '../../contexts/orderPlacedContext';
 
 function DietSchedule() {
     const {logout} = useAuth();
     const navigate = useNavigate();
     const [animationClass, setAnimationClass] = useState('');
-    const [orderInfo, setOrderInfo] = useState(null); // Nowy stan dla przechowywania informacji o zamówieniu
-    const [isLoading, setIsLoading] = useState(false); // Nowy stan
+    const [orderInfo, setOrderInfo] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [preferences, setPreferences] = useState('');
     const [dietData, setDietData] = useState([]);
     const [currentWeekStart, setCurrentWeekStart] = useState(getMonday(new Date()));
-    const [numberOfDaysToShow, setNumberOfDaysToShow] = useState(0);
+    const [isLoading2, setIsLoading2] = useState(true);
+    const { orderPlaced, setOrderPlaced, setOrder } = useContext(OrderPlacedContext);
+
+
+    useEffect(() => {
+        if (preferences === null) {
+            setIsLoading2(false);
+        } else if (preferences === false) {
+            navigate('/dietconfig', { state: { orderInfo: orderInfo } });
+        }
+
+    }, [preferences]);
 
 
     function formatDate(date) {
@@ -72,10 +85,14 @@ function DietSchedule() {
 
         const orderInfo = rawData.order_info;
         setOrderInfo(orderInfo);
+
+
+
+
         return formattedData;
     }
 
-    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const days = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela'];
 
     function getDayDate(index) {
         const date = new Date(currentWeekStart);
@@ -141,13 +158,17 @@ function DietSchedule() {
         const endDate = formatDate(new Date(currentWeekStart).setDate(currentWeekStart.getDate() + 6));
         const accessToken = localStorage.getItem('access_token');
 
-        axios.get(ip + '/diet-plans/', {
+        axios.get(ip + '/api/diet-plans/', {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
             params: {startDate, endDate}
         }).then(response => {
+            setIsLoading2(false);
+
             const rawData = response.data;
+            const preferences_set2 = rawData.preferences_set;
+            setPreferences(preferences_set2);
             const formattedData = formatDietData(rawData);
             const completeData = days.map((day, index) => {
                 const currentDate = new Date(currentWeekStart);
@@ -155,22 +176,25 @@ function DietSchedule() {
                 const dateString = formatDate(currentDate);
                 return {[dateString]: formattedData[dateString] || []};
             });
-            console.log("completeData",completeData)
 
             setDietData(Object.assign({}, ...completeData));
         })
             .catch(error => {
+                setIsLoading2(false);
+                setOrderPlaced(false)
                 if (error.response && error.response.status === 401) {
                     logout();
                     navigate("/login")
                 }
             });
-    }, [currentWeekStart]);
+    }, [currentWeekStart, logout, navigate]);
+
+
+
 
 
     const [displayedDaysCount, setDisplayedDaysCount] = useState(0);
 
-    // Tymczasowa zmienna do zliczania wyświetlanych dni
     let tempDisplayedDays = 0;
 
     const daysComponents = days.map((day, index) => {
@@ -187,52 +211,107 @@ function DietSchedule() {
                 />
             );
         }
-        return null; // Zwróć null, jeśli dzień nie jest w zakresie, aby React wiedział, że nic nie ma renderować
+        return null;
     });
 
     useEffect(() => {
-        // Uaktualnij stan tylko po obliczeniu liczby wyświetlanych dni
         setDisplayedDaysCount(tempDisplayedDays);
-    }, [tempDisplayedDays]); // Zależność od tempDisplayedDays, aby zapewnić aktualizację stanu
+    }, [tempDisplayedDays]);
 
     const getGridTemplateColumns = () => {
-        console.log("displayedDaysCount",displayedDaysCount)
-        // Tutaj możesz dostosować wartości 'sm:', 'md:', 'lg:', 'xl:' w zależności od potrzeb
-        // Przykład może zakładać Tailwind CSS
-        let classes = 'grid-cols-1';
+        let classes = 'grid-cols-1 max-w-[400px] gap-4';
+
         if (displayedDaysCount > 1) {
-            classes += ` sm:grid-cols-${Math.min(displayedDaysCount, 2)}`;
+            classes += ` sm:grid-cols-2 sm:max-w-[700px] sm:gap-20`;
         }
         if (displayedDaysCount > 2) {
-            classes += ` md:grid-cols-${Math.min(displayedDaysCount, 3)}`;
+            classes += ` md:grid-cols-3 md:max-w-full md:gap-4`;
         }
         if (displayedDaysCount > 3) {
-            classes += ` lg:grid-cols-${Math.min(displayedDaysCount, 4)}`;
+            classes += ` lg:grid-cols-4`;
         }
         if (displayedDaysCount > 4) {
-            console.log("AAAdisplayedDaysCount",displayedDaysCount)
-            classes += ` xl:grid-cols-${displayedDaysCount}`;
+            classes += ` xl:grid-cols-5`;
         }
-        if (displayedDaysCount === 5) {
-            console.log("AAAdisplayedDaysCount",displayedDaysCount)
-            classes += ` lg:grid-cols-5`;
-        } if (displayedDaysCount === 6) {
-            console.log("AAAdisplayedDaysCount",displayedDaysCount)
-            classes += ` lg:grid-cols-6`;
-        }if (displayedDaysCount === 7) {
-            console.log("AAAdisplayedDaysCount",displayedDaysCount)
-            classes += ` lg:grid-cols-7`;
+        if (displayedDaysCount > 5) {
+            classes += ` 2xl:grid-cols-7`;
         }
+        if (displayedDaysCount > 6) {
+            classes += ` 3xl:grid-cols-7`;
+        }
+
         return classes;
     };
 
+
+
+    if (orderInfo && (orderInfo.status === "pending" || orderInfo.status === "Pending" || orderInfo.status === "new" || orderInfo.status === "New")) {
+        return (
+            <div className="flex flex-col items-center justify-center h-screen bg-gray-100 p-4 pt-0">
+                <div className="bg-white shadow-xl rounded-lg p-8 max-w-sm w-full">
+                    <h2 className="text-2xl font-semibold text-center text-gray-800 mb-4">Dieta w trakcie tworzenia</h2>
+                    <p className="text-center text-gray-600 mb-6">Twoja indywidualna dieta jest obecnie przygotowywana. Oto szczegóły:</p>
+                    <div className="mb-4">
+                        <h3 className="text-lg font-medium text-gray-700">Identyfikator zamówienia:</h3>
+                        <p className="text-gray-500">{orderInfo.id}</p>
+                    </div>
+                    <div className="mb-4">
+                        <h3 className="text-lg font-medium text-gray-700">Data rozpoczęcia:</h3>
+                        <p className="text-gray-500">{formatDate(orderInfo.start_date)}</p>
+                    </div>
+                    <div className="mb-6">
+                        <h3 className="text-lg font-medium text-gray-700">Data zakończenia:</h3>
+                        <p className="text-gray-500">{formatDate(orderInfo.end_date)}</p>
+                    </div>
+
+                </div>
+            </div>
+        );
+    }
+
+    if (orderInfo && (orderInfo.status === "Cancelled" || orderInfo.status === "cancelled") ){
+        return (
+            <div className="flex flex-col items-center justify-center h-screen bg-gray-100 p-4 pt-0">
+                <div className="bg-white shadow-xl rounded-lg p-8 max-w-sm w-full">
+                    <h2 className="text-xl font-semibold text-center text-gray-800 mb-4">Zamówienie zostało anulowane.</h2>
+                    <p className="text-center text-gray-600 mb-6"><p>Skontaktuj się z administracją.</p> Oto szczegóły:</p>
+                    <div className="mb-4">
+                        <h3 className="text-lg font-medium text-gray-700">Identyfikator zamówienia:</h3>
+                        <p className="text-gray-500">{orderInfo.id}</p>
+                    </div>
+                    <div className="mb-4">
+                        <h3 className="text-lg font-medium text-gray-700">Data rozpoczęcia:</h3>
+                        <p className="text-gray-500">{formatDate(orderInfo.start_date)}</p>
+                    </div>
+                    <div className="mb-6">
+                        <h3 className="text-lg font-medium text-gray-700">Data zakończenia:</h3>
+                        <p className="text-gray-500">{formatDate(orderInfo.end_date)}</p>
+                    </div>
+
+                </div>
+            </div>
+        );
+    }
+
+    if (isLoading2) {
+        return <div>Loading...</div>;
+    }
+
+    const handleNavigate = () => {
+        navigate('/ingredients', { state: { currentWeekStart } });
+    }
+
     return (
         <div className="flex flex-col items-center p-4 mt-8">
-            <div className="flex flex-col md:flex-row w-full justify-between items-center mb-4">
+            <div className="flex flex-col md:flex-row w-full  justify-between items-center mb-4">
                 <h1 className="text-3xl font-bold text-center mb-4 md:mb-0 md:mr-4">Twój plan diety na ten tydzień</h1>
-                <a href="/Dieta/Dieta" className="bg-emerald-500 text-white px-4 py-2 rounded md:self-start">
-                    Sprawdź dostępne plany
-                </a>
+
+                <button onClick={handleNavigate}
+                        className="bg-emerald-500 text-white px-4 py-2 rounded md:self-start"
+                >
+
+                    Lista składników
+                </button>
             </div>
 
             <CalendarNavigation
@@ -247,20 +326,20 @@ function DietSchedule() {
             />
 
 
-            <div className={`grid ${getGridTemplateColumns()} gap-4 w-full mt-8 ${animationClass}`}>                {days.map((day, index) => {
-                    const dayDate = new Date(new Date(currentWeekStart).setDate(currentWeekStart.getDate() + index));
-                    if (isWithinOrderDate(dayDate)) {
-                        return (
-                            <DayCard
-                                key={index}
-                                day={day}
-                                date={getDayDate(index)}
-                                meals={dietData[formatDate(dayDate)] || []}
-                                isToday={isToday(dayDate)}
-                            />
-                        );
-                    }
-                })}
+            <div className={`grid ${getGridTemplateColumns()} gap-4 w-full h-auto mt-8 ${animationClass}`}>                {days.map((day, index) => {
+                const dayDate = new Date(new Date(currentWeekStart).setDate(currentWeekStart.getDate() + index));
+                if (isWithinOrderDate(dayDate)) {
+                    return (
+                        <DayCard
+                            key={index}
+                            day={day}
+                            date={getDayDate(index)}
+                            meals={dietData[formatDate(dayDate)] || []}
+                            isToday={isToday(dayDate)}
+                        />
+                    );
+                }
+            })}
             </div>
         </div>
     );

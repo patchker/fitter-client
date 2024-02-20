@@ -1,20 +1,67 @@
-import React, {useState} from 'react';
-import {Link} from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import OfferCard from "./components/OfferCard"
 import FAQItem from "./components/FAQItem"
+import axios from "axios";
+import ip from "../../config/Ip";
 
 
 function Dieta() {
     const [selectedOffer, setSelectedOffer] = useState(null);
     const [openQuestion, setOpenQuestion] = useState(null);
 
+    const navigate = useNavigate();
+
+    const fetchOrders = async (userToken) => {
+        try {
+            const response = await axios.get(ip + '/api/user_orders/', {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                }
+            });
+
+
+
+            return response.data;
+        } catch (error) {
+            console.error('There was an error fetching the orders!', error);
+            return null;
+        }
+    };
+
+    useEffect(() => {
+
+        const checkSubscription = async ()=>
+        {
+            const userToken = localStorage.getItem('access_token');
+
+            const orders = await fetchOrders(userToken);
+
+            if (orders && orders.length > 0) {
+                const lastOrder = orders[orders.length - 1];
+                const currentDate = new Date();
+                const startDate = new Date(lastOrder.data_rozpoczecia);
+                const endDate = new Date(lastOrder.data_zakonczenia);
+                endDate.setHours(23, 59, 59, 999);
+
+                if (currentDate >= startDate && currentDate <= endDate) {
+                    navigate("/dietcalendar");
+                }
+            }
+        }
+
+
+checkSubscription();
+
+    }, [])
+
 
     const offers = [
         {
             id: 1,
-            title: "Darmowa Dieta od AI",
-            description: "Plan diety stworzony automatycznie przez sztuczną inteligencję.",
-            details: "Ta dieta jest całkowicie darmowa. Otrzymasz spersonalizowany plan żywieniowy wygenerowany przez naszą sztuczną inteligencję.",
+            title: "Automatyczna dieta",
+            description: "Plan diety stworzony automatycznie przez zaawansowane algorytmy.",
+            details: "Ta dieta jest całkowicie darmowa. Otrzymasz spersonalizowany plan żywieniowy wygenerowany przez nasz algorytm",
             link: "freediet",
             price: ""
 
@@ -80,8 +127,8 @@ function Dieta() {
     }
 
     return (
-        <div className="w-full h-full py-16 bg-gray-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+        <div className="w-full h-full  border-t-2  py-16 bg-gray-50 ">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10k">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                     {offers.map(offer => (
                         <OfferCard key={offer.id} offer={offer} onSelect={handleSelectOffer}/>
@@ -118,7 +165,7 @@ function Dieta() {
                             <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
 
                                 <Link to={`/PurchaseDiet/${selectedOffer.id}`}
-                                      className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-500 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-400 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5 ml-6">
+                                      className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-blue-500 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-400 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5 md:ml-6">
                                     Kup Teraz
                                 </Link>
 

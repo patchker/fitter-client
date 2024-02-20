@@ -13,7 +13,7 @@ function MealCard({mealGroup}) {
             {mealGroup.meals.map(meal => {
                 const tooltipId = `mealTip-${meal.uuid}`;
                 return (
-                    <div key={meal.id} className="bg-white p-3 rounded-md shadow-sm w-full">
+                    <div key={meal.id} className="bg-white p-3 rounded-md shadow-sm  w-full">
                         <div id={tooltipId}>
                             <p>{meal.meal} ({meal.quantity}g)</p>
 
@@ -22,8 +22,8 @@ function MealCard({mealGroup}) {
                             key={`${meal.id}-${meal.quantity}`}
                             anchorSelect={`#${tooltipId}`}
                             clickable
-                            style={{zIndex: 1000}}
-                            className="tooltip hover:bg-white hover:opacity-100"
+                            style={{zIndex: 1000, backgroundColor: "white"}}
+                            className="tooltip2 hover:bg-white hover:opacity-100e"
                         >
                             <div className="tooltip-content hover:opacity-100">
                                 <img src={meal.image_url} alt="meal" className="w-20 h-20 mb-2 rounded"/>

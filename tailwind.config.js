@@ -6,9 +6,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'sans': ['Roboto', 'sans-serif'], // Ustawienie Roboto jako głównej czcionki sans-serif
-        'masque': ['Masque', 'sans-serif'], // Zaktualizuj nazwę rodziny czcionek, aby odpowiadała nazwie używanej w definicji @font-face
-        'poppins': ['Poppins', 'sans-serif'], // Zaktualizuj nazwę rodziny czcionek, aby odpowiadała nazwie używanej w definicji @font-face
+        'sans': ['Roboto', 'sans-serif'],
+        'masque': ['Masque', 'sans-serif'],
+        'poppins': ['Poppins', 'sans-serif'],
+        'bungee': ['Bungee', 'sans-serif'],
 
       }
     }

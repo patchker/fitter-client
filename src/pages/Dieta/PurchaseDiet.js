@@ -6,7 +6,7 @@ import axios from "axios";
 import ip from "../../config/Ip";
 
 function PurchaseDiet() {
-    const { userData, setUserData } = useAuth(); // Używamy hooka useAuth, aby uzyskać dostęp do danych użytkownika
+    const { userData, setUserData } = useAuth();
     const navigate = useNavigate();
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [duration, setDuration] = useState("");
@@ -14,6 +14,28 @@ function PurchaseDiet() {
     const { setPaymentData } = usePayment();
 
 
+    const fetchOrders = async (userToken) => {
+        try {
+            const response = await axios.get(ip + '/api/user_orders/', {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                }
+            });
+
+
+
+            return response.data;
+        } catch (error) {
+            console.error('There was an error fetching the orders!', error);
+            return null;
+        }
+    };
+
+    useEffect(() => {
+
+
+
+    }, [])
 
     useEffect(() => {
         if (!userData) {
@@ -36,14 +58,41 @@ function PurchaseDiet() {
             };
             fetchData();
         }
+
+
+        const checkSubscription = async ()=>
+        {
+            const userToken = localStorage.getItem('access_token');
+
+            const orders = await fetchOrders(userToken);
+
+            if (orders && orders.length > 0) {
+                // Pobiera ostatnie zamówienie
+                const lastOrder = orders[orders.length - 1];
+
+                const currentDate = new Date();
+                const startDate = new Date(lastOrder.data_rozpoczecia);
+                const endDate = new Date(lastOrder.data_zakonczenia);
+
+                console.log(startDate);
+                console.log(endDate);
+
+                endDate.setHours(23, 59, 59, 999);
+
+                if (currentDate >= startDate && currentDate <= endDate) {
+                    navigate("/dietcalendar");
+                }
+            }
+        }
+
+
+        checkSubscription();
+
+
     }, []);
 
 
-    const [personalInfo, setPersonalInfo] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-    });
+
     const [address, setAddress] = useState({
         street: "",
         city: "",
@@ -51,22 +100,10 @@ function PurchaseDiet() {
         country: ""
     });
 
-    const [paymentMethod, setPaymentMethod] = useState(""); // Dodano stan dla metody płatności
+    const [paymentMethod, setPaymentMethod] = useState("");
 
 
-    useEffect(() => {
-        // Upewnij się, że dane użytkownika są załadowane przed próbą ich wykorzystania
-        if (userData) {
-            console.log('User data loaded:', userData);
-        }
-    }, [userData]);
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setPersonalInfo(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
+
     const handlePaymentMethodChange = (event) => {
         setPaymentMethod(event.target.value);
     };
@@ -75,7 +112,7 @@ function PurchaseDiet() {
             {
                 id: 1,
                 type: "Darmowy",
-                title: "Darmowy Plan od AI",
+                title: "Darmowa, automatyczna dieta",
                 details: "Idealny dla osób rozpoczynających swoją przygodę z dietą. Oferuje podstawowe wskazówki i plany żywieniowe.",
                 price: 0
             },
@@ -94,18 +131,15 @@ function PurchaseDiet() {
                 price: 99.99
             }
         ];
-        console.log(planType)
         const planId = Number(planType);
-
         return dietPlans.find(plan => plan.id === planId);
     }
     function calculateTotalPrice() {
         if (!selectedPlan || !duration) return "0 PLN";
 
-        const months = parseInt(duration); // Zakładam, że wartość duration jest liczbą reprezentującą liczbe miesięcy
+        const months = parseInt(duration);
         const totalPrice = selectedPlan.price * months;
 
-        // Zwraca wartość zaokrągloną do dwóch miejsc po przecinku
         return `${totalPrice.toFixed(2)} PLN`;
     }
 
@@ -120,6 +154,7 @@ function PurchaseDiet() {
             !userData.last_name || !userData.email ||
             !address.street || !address.city || !address.zipCode ||
             !address.country || !paymentMethod) {
+            /*
             console.log(selectedPlan)
             console.log(duration)
             console.log(userData.first_name)
@@ -130,6 +165,8 @@ function PurchaseDiet() {
             console.log(address.zipCode)
             console.log(address.country)
             console.log(paymentMethod)
+            */
+
             alert("Proszę wypełnić wszystkie pola.");
             return;
         }
@@ -139,10 +176,13 @@ function PurchaseDiet() {
             duration: duration
         });
 
-        //alert(`Zakupiłeś dietę: ${selectedPlan.title} na czas trwania: ${duration}`);
         navigate("/paymentPage");
 
     };
+    const countries = [
+        { code: 'PL', name: 'Polska' },
+        { code: 'US', name: 'Stany Zjednoczone' },
+    ];
 
 
     const handleAddressChange = (event) => {
@@ -242,14 +282,19 @@ function PurchaseDiet() {
                         className="w-full p-2 border rounded"
                         placeholder="Kod pocztowy"
                     />
-                    <input
-                        type="text"
+                    <select
                         name="country"
                         value={address.country}
                         onChange={handleAddressChange}
                         className="w-full p-2 border rounded"
-                        placeholder="Kraj"
-                    />
+                    >
+                        <option value="">Wybierz kraj</option>
+                        {countries.map((country) => (
+                            <option key={country.code} value={country.code}>
+                                {country.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
             <div className="mb-6">

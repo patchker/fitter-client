@@ -12,6 +12,73 @@ import DraggableMeal from "./components/DraggableMeal"
 import DroppableDay from "./components/DroppableDay"
 import MealDropArea from "./components/MealDropArea"
 
+
+const DietInfo = ({foodPreferences,dietInfo, showSummary, onTextLength}) => {
+    const infoText = () => {
+        let text = "";
+        if (dietInfo.diet_type==="lowIG") text += "Dieta z niskim IG\n";
+        if (dietInfo.diet_type==="vegetarian") text += "Dieta wegetariańska\n";
+        if (dietInfo.diet_type==="vegan") text += "Dieta wegańska\n";
+        if (dietInfo.diet_type==="standard") text += "Dieta standardowa\n";
+        if (dietInfo.calories) text += dietInfo.calories+" kcal \n";
+        if (foodPreferences.lactoseFree) text += "Bez laktozy\n";
+        if (foodPreferences.glutenFree) text += "Bez glutenu\n";
+        if (foodPreferences.nutFree) text += "Borzechów\n";
+        if (foodPreferences.fishFree) text += "Bez ryb\n";
+        if (foodPreferences.soyFree) text += "Bez soi\n";
+
+        return text;
+    };
+
+    const summaryLength = 50;
+    const fullText = infoText();
+
+    const isLongText = fullText.length > summaryLength;
+    let displayText;
+    useEffect(() => {
+        if (onTextLength) {
+            onTextLength(fullText.length);
+        }
+    }, [fullText, onTextLength]);
+
+    if (showSummary) {
+        displayText = isLongText ? fullText.substring(0, summaryLength) + '...' : fullText;
+    } else {
+        displayText = fullText;
+    }
+
+    return (
+        <div style={{whiteSpace: 'pre-wrap'}}>
+            {displayText || "Brak"}
+        </div>
+    );
+};
+
+const DietInfo2 = ({foodIngredients_1, showSummary, onTextLength}) => {
+    const fullText = foodIngredients_1.join(", ");
+    const summaryLength = 150;
+    const isLongText = fullText.length > summaryLength;
+
+    useEffect(() => {
+        if (onTextLength) {
+            onTextLength(fullText.length);
+        }
+    }, [fullText, onTextLength]);
+
+    const displayText = showSummary
+        ? (isLongText ? fullText.substring(0, summaryLength) + '...' : fullText)
+        : fullText;
+
+    const textStyle = displayText ? {} : {color: 'rgb(55 65 81)'};
+
+    return (
+        <div style={{whiteSpace: 'pre-wrap'}}>
+            <span style={textStyle}>{displayText || "Brak"}</span>
+        </div>
+    );
+};
+
+
 function getDisplayedDays(currentDate) {
     const yesterday = new Date(currentDate);
     const today = new Date(currentDate);
@@ -49,8 +116,7 @@ function DietMaker() {
     const [isDragging, setIsDragging] = useState(false);
     const displayedDays = getDisplayedDays(new Date(currentDate));
     const [meals, setMeals] = useState([]);
-    const [userNick, setUserNick] = useState(null);
-    const {nick} = useParams(); // Pobieranie 'nick' z URL
+    const {nick} = useParams();
     const [dietPlanInfo, setDietPlanInfo] = useState('');
     const [changesMade, setChangesMade] = useState(false);
     const [showTooltip, setShowTooltip] = useState(false);
@@ -61,10 +127,60 @@ function DietMaker() {
     const [isLoading, setIsLoading] = useState(false);
     const [animationClass, setAnimationClass] = useState('');
     const [dietData, setDietData] = useState([]);
+    const [showFullText, setShowFullText] = useState(false);
+    const [foodIngredients_1, setFoodIngredients_1] = useState([]);
+    const [foodIngredients_2, setFoodIngredients_2] = useState([]);
+    const [isLongText, setIsLongText] = useState(false);
+
+    const [foodPreferences, setFoodPreferences] = useState({
+        glutenFree: false,
+        lactoseFree: false,
+        nutFree: false,
+        fishFree: false,
+        soyFree: false
+    });
+
+
+    const handleTextLength = (length) => {
+        setIsLongText(prevState => prevState || length > 36);
+    };
+
+    const dietText = (
+        <DietInfo
+            foodPreferences={foodPreferences}
+            dietInfo={dietPlanInfo}
+            showSummary={!showFullText}
+            onTextLength={handleTextLength}
+        />
+    );
+
+    const dietText2 = (
+        <DietInfo2
+            foodIngredients_1={foodIngredients_1}
+            showSummary={!showFullText}
+            onTextLength={handleTextLength}
+        />
+    );
+
+    const dietText3 = (
+        <DietInfo2
+            foodIngredients_1={foodIngredients_2}
+            showSummary={!showFullText}
+            onTextLength={handleTextLength}
+        />
+    );
+
 
     function handleChanges() {
         setChangesMade(true);
     }
+
+    const handleSelectChanges = (event) => {
+
+        handleChanges()
+        setDietPlanInfo({...dietPlanInfo, status: event.target.value});
+    };
+
 
     const updateSearch = debounce((value) => {
         setDebouncedSearchTerm(value);
@@ -77,10 +193,10 @@ function DietMaker() {
 
     const saveDietData = (allDietData) => {
         const accessToken = localStorage.getItem('access_token');
-        console.log("allDietData", allDietData)
-        axios.post(ip + "/save_diet_data/", {
-            userNick: nick,
-            diet_data: allDietData
+        axios.post(ip + "/api/save_diet_data/", {
+            orderID: nick,
+            diet_data: allDietData,
+            status: dietPlanInfo.status
         }, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
@@ -88,13 +204,12 @@ function DietMaker() {
         })
             .then(response => {
                 console.log("Dane zostały zaktualizowane:", response.data);
-                console.log(allDietData)
+
 
             })
             .catch(error => {
                 console.error("Wystąpił błąd podczas aktualizacji danych:", error);
-                console.log(allDietData)
-                console.log(nick)
+
                 if (error.response && error.response.status === 401) {
                     logout();
                     navigate("/login")
@@ -111,7 +226,7 @@ function DietMaker() {
 
     useEffect(() => {
         if (searchTerm) {
-            axios.get(ip + `/search_meals/`, {
+            axios.get(ip + `/api/search_meals/`, {
                 params: {
                     query: searchTerm
                 }
@@ -288,18 +403,29 @@ function DietMaker() {
         const startDate = formatDate(currentDate, -1);
         const endDate = formatDate(currentDate, 1);
         const accessToken = localStorage.getItem('access_token');
-        console.log("OD", startDate)
-        console.log("DO", endDate)
-        axios.get(ip + '/dietix/', {
+
+        axios.get(ip + '/api/dieteditor/', {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
-            params: {startDate, endDate, userNick: nick}
+            params: {startDate, endDate, orderID: nick}
         }).then(response => {
 
             const rawData = response.data;
             const formattedData = formatDietData(rawData.days);
             setDietPlanInfo(rawData.diet_plan)
+
+
+            setFoodPreferences({
+                glutenFree: rawData.diet_plan.gluten_free,
+                lactoseFree: rawData.diet_plan.lactose_free,
+                nutFree: rawData.diet_plan.nut_free,
+                fishFree: rawData.diet_plan.fish_free,
+                soyFree: rawData.diet_plan.soy_free
+            });
+            setFoodIngredients_1(rawData.diet_plan.food_preferences_1)
+            setFoodIngredients_2(rawData.diet_plan.food_preferences_2)
+
             const completeData = [...Array(3)].map((_, index) => {
                 const dateForDay = new Date(currentDate.getTime());
                 dateForDay.setDate(dateForDay.getDate() - (1 - index));
@@ -309,6 +435,7 @@ function DietMaker() {
 
 
             setDietData(Object.assign({}, ...completeData));
+
         })
             .catch(error => {
                 console.error(error);
@@ -413,6 +540,7 @@ function DietMaker() {
                 newDate.setDate(newDate.getDate() + daysToAdd);
                 setCurrentDate(newDate);
                 setChangesMade(false);
+
                 setAnimationClass('animate-in');
             }, 300);
         }
@@ -440,52 +568,110 @@ function DietMaker() {
         };
     }
 
+    const isDayInRange = (day) => {
+        const dayDate = new Date(day);
+        const startDate = new Date(dietPlanInfo.diet_start_date);
+        const endDate = new Date(dietPlanInfo.diet_end_date);
+
+        dayDate.setHours(0, 0, 0, 0);
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(0, 0, 0, 0);
+
+        return dayDate >= startDate && dayDate <= endDate;
+    };
+
+    const daysInRange = displayedDays.filter(isDayInRange).length;
+
+    let gridClass = "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 ";
+    if (daysInRange === 3) {
+        gridClass += "lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 ";
+    } else if (daysInRange === 2) {
+        gridClass += "lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 ";
+    } else if (daysInRange === 1) {
+        gridClass += "lg:grid-cols-1 xl:grid-cols-1 2xl:grid-cols-1 m-auto max-w-[600px]";
+    }
+
     return (
         <div className="flex flex-col p-4 ">
-            <div className="flex flex-col md:flex-row w-full items-center mb-2">
-                <h1 className="text-2xl font-bold text-center mb-4 md:mb-0 md:text-left whitespace-nowrap">Plan diety
-                    użytkownika {nick}</h1>
+            <div className="flex flex-col md:flex-row w-full mb-2">
+                <h1 className=" sm:text-lg lg:text-2xl font-bold text-center mb-4 md:mb-0 md:text-left whitespace-nowrap">Plan
+                    diety
+                    użytkownika {dietPlanInfo && dietPlanInfo.username}</h1>
 
-                <div className="w-full flex flex-col md:flex-row items-center">
-                    <div className="w-full md:w-auto md:mx-auto">
+                <div className="w-full flex flex-col md:flex-row justify-between">
+                    <div className="flex flex-col md:flex-row  mb-4 md:mb-0 md:ml-10">
                         <button
                             onClick={handleSaveAllDays}
-                            className={`text-white px-16 py-3 rounded mr-36 mx-auto block
-              ${changesMade ? 'bg-emerald-500 animate-pulse' : 'bg-gray-500'}`}
+                            className={`text-white px-4  h-10 rounded md:w-auto w-full mb-5 sm:mb-5 md:mb-0 md:mr-10 whitespace-nowrap
+                        ${changesMade ? 'bg-emerald-500 animate-pulse' : 'bg-gray-500'}`}
                             disabled={!changesMade}
                         >
                             {changesMade ? 'Zapisz dane' : 'Brak zmian'}
                         </button>
 
-                    </div>
+                        <div className="w-full md:w-36">
+                            <select value={dietPlanInfo.status} onChange={handleSelectChanges}
+                                    className="form-select block w-full px-3 py-2 text-base font-normal text-gray-700 bg-gray-300 bg-clip-padding bg-no-repeat border border-solid border-gray-400 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none">
+                                <option value="new">Nowe</option>
+                                <option value="pending">Oczekujące</option>
+                                <option value="completed">Zakończone</option>
+                                <option value="cancelled">Anulowane</option>
+                            </select>
+                        </div>
 
-                    <a href="/src/pages/Dieta/Dieta"
-                       className="hidden md:block bg-emerald-500 text-white px-4 py-2 rounded text-center">
-                        Sprawdź dostępne plany
-                    </a>
+
+                    </div>
+                </div>
+            </div>
+
+            <div className="m-auto text-center w-full ">
+                <div className="w-full bg-gray-200 rounded-xl shadow-lg overflow-hidden">
+                    <div className="grid md:grid-cols-3 p-2 px-4">
+
+                        {/* Sekcja preferencji diety */}
+                        <div className="border-r-2 border-gray-300">
+                            <h3 className="font-bold text-lg mb-2">Preferencje diety:</h3>
+                            <div className="text-gray-700 text-sm md:text-base">
+                                {dietText}
+
+                            </div>
+                        </div>
+
+                        {/* Sekcja preferowanych składników */}
+                        <div className="border-r-2 border-gray-300 px-2">
+                            <h3 className="font-bold text-lg mb-2">Preferowane dania:</h3>
+                            <span className="text-green-500">{dietText2}</span>
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-lg mb-2 px-2">Unikaj dań:</h3>
+                            <span className="text-red-500">{dietText3}</span>
+                        </div>
+                    </div>
+                    {isLongText && (
+                        <button
+                            onClick={() => setShowFullText(!showFullText)}
+                            className="bg-emerald-500 text-white py-1 px-4 rounded hover:bg-emerald-600 transition duration-300 mb-4"
+                        >
+                            {showFullText ? 'Zwiń' : 'Rozwiń'}
+                        </button>
+                    )}
                 </div>
             </div>
 
 
-            <div className="flex flex-col md:flex-row md:justify-start mb-4 text-gray-400">
-                <span className="mr-2">DIET_ID: {dietPlanInfo.diet_id}</span>
-                <span className="mr-2">OD: {formatDate(dietPlanInfo.diet_start_date)}</span>
-                <span>DO: {formatDate(dietPlanInfo.diet_end_date)}</span>
-            </div>
-
-
-            <div className="flex items-center justify-center space-x-4 mr-[334px] xl:mr-[360px]">
+            <div
+                className="flex items-center mt-4 justify-center space-x-4 sm:mr-0  md:mr-[33px] lg:mr-[400px] xl:mr-[390px] 2xl:mr-[500px] ">
 
 
                 <button
-                    className={`${(!isPreviousPeriodAvailable() || isLoading) && 'text-gray-500'}`}
+                    className={` whitespace-nowrap ${(!isPreviousPeriodAvailable() || isLoading) && 'text-gray-500'}`}
                     disabled={!isPreviousPeriodAvailable()}
                     onClick={() => changeDateWithAnimation(-3)}
                 >
                     &lt; Poprzednie 3 dni
                 </button>
                 <button
-                    className={`${(!isNextPeriodAvailable() || isLoading) && 'text-gray-500'}`}
+                    className={`whitespace-nowrap ${(!isNextPeriodAvailable() || isLoading) && 'text-gray-500'}`}
                     disabled={!isNextPeriodAvailable()}
                     onClick={() => changeDateWithAnimation(3)}
                 >
@@ -495,38 +681,41 @@ function DietMaker() {
 
 
             <DndProvider backend={HTML5Backend}>
-                <div className="flex flex-col md:flex-row justify-center items-start pb-4">
-                    <div
-                        className={`grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-2 ${animationClass}`}>
-                        {displayedDays.map((dayDate, index) => {
-                            return (
-                                <DroppableDay
-                                    key={index}
-                                    day={{date: formatDate(dayDate)}}
-                                    meals={dietData[formatDate(dayDate)] || []}
-                                    onMealDropped={handleMealDropped}
-                                    isDragging={isDragging}
-                                    updateMealGrams={updateMealGrams}
-                                    updateMealCalories={updateMealCalories}
-                                    saveDietData={saveDietData}
-                                    handleChanges={handleChanges}
-                                    setMeals={setMeals}
-                                    handleDeleteMeal={handleDeleteMeal}
-                                    dietPlanInfo={dietPlanInfo}
-                                    calculateMacros={calculateMacros}
-                                    MealDropArea={MealDropArea}
-                                    mapTimeToMealType={mapTimeToMealType}
-                                />
-                            )
-                        })}
+                <div
+                    className="flex flex-col md:flex-row justify-center md:justify-start sm:items-center md:items-start pb-4 w-full ">
+                    {/* Sekcja dni */}
+                    <div className="flex-grow md:w-3/4 ">
+                        <div className={`${gridClass} gap-5 mt-2 ${animationClass}`}>
+                            {displayedDays.map((dayDate, index) => {
+                                return (
+                                    <DroppableDay
+                                        key={index}
+                                        day={{date: formatDate(dayDate)}}
+                                        meals={dietData[formatDate(dayDate)] || []}
+                                        onMealDropped={handleMealDropped}
+                                        isDragging={isDragging}
+                                        updateMealGrams={updateMealGrams}
+                                        updateMealCalories={updateMealCalories}
+                                        saveDietData={saveDietData}
+                                        handleChanges={handleChanges}
+                                        setMeals={setMeals}
+                                        handleDeleteMeal={handleDeleteMeal}
+                                        dietPlanInfo={dietPlanInfo}
+                                        calculateMacros={calculateMacros}
+                                        MealDropArea={MealDropArea}
+                                        mapTimeToMealType={mapTimeToMealType}
+                                    />
+                                )
+                            })}
+                        </div>
                     </div>
 
                     {/* Sekcja wyszukiwania */}
-                    <div className="search-section ml-10 md:w-72 lg:w-80 mt-2">
+                    <div className="ml-10 md:w-1/3 lg:w-1/4 mt-2">
                         <input
                             type="text"
                             placeholder="Szukaj posiłków..."
-                            className="p-2 w-full bg-gray-100 rounded h-12"
+                            className="p-2 w-full bg-gray-100 rounded h-12 mb-2"
                             onChange={(e) => delayedQuery(e.target.value)}
                         />
                         {isLoading ? (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import ip from '../../config/Ip'
 
@@ -10,7 +10,7 @@ function PurchaseComponent() {
 
         axios({
             method: 'post',
-            url: ip+'/api/zamowienia/',
+            url: ip + '/api/zamowienia/',
             headers: {
                 Authorization: `Bearer ${token}`
             },

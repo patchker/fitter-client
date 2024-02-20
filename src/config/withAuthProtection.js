@@ -5,7 +5,7 @@ import { verifyToken } from '../contexts/AuthContext';
 const withAuthProtection = (WrappedComponent) => {
     return (props) => {
         const navigate = useNavigate();
-        const [isVerified, setIsVerified] = useState(false); // stan, który będzie trzymał informację, czy token został zweryfikowany
+        const [isVerified, setIsVerified] = useState(false);
 
         useEffect(() => {
             const checkTokenValidity = async () => {
@@ -13,14 +13,13 @@ const withAuthProtection = (WrappedComponent) => {
                 if (!isValid) {
                     navigate("/login");
                 } else {
-                    setIsVerified(true); // jeśli token jest ważny, ustaw isVerified na true
+                    setIsVerified(true);
                 }
             };
 
             checkTokenValidity();
         }, [navigate]);
 
-        // Renderuj WrappedComponent tylko, jeśli token jest zweryfikowany
         return isVerified ? <WrappedComponent {...props} /> : null;
     };
 };

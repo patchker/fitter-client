@@ -13,23 +13,21 @@ function EditableField({
                            handleChanges
                        }) {
     const [tempValue, setTempValue] = useState(value || default_grams);
-    console.log("isEditing", isEditing)
-    console.log("uuid", uuid)
+
     const handleBlur = () => {
         const oldValue = value !== undefined ? value : default_grams;
 
-        if (tempValue !== oldValue) { // Sprawdzenie, czy wartość została zmieniona
+        if (tempValue !== oldValue) {
 
-            handleChanges(); // Wywołanie funkcji handleChanges, jeśli wartość została zmieniona
+            handleChanges();
         }
         onValueChange(tempValue);
-        updateCalories(tempValue); // Aktualizuje kalorie po zmianie wartości
-        setEditingMealId(null); // resetowanie editingMealId po zakończeniu edycji
+        updateCalories(tempValue);
+        setEditingMealId(null);
 
 
     };
-    if (isEditing)
-        console.log("EDITING: ", uuid)
+
     return isEditing ? (
         <input
             type="number"
@@ -39,17 +37,18 @@ function EditableField({
             onFocus={() => setEditingMealId(uuid)}
             onClick={(e) => {
                 e.stopPropagation();
-                // Reszta obsługi zdarzenia
             }}
             autoFocus
-            className="w-12 focus:outline-none focus:ring-0 focus:border-transparent border-transparent bg-transparent hide-number-input-spinners"
+            className="w-12 focus:outline-none focus:ring-0 focus:border-transparent border-transparent bg-transparent hide-number-input-spinners bg-emerald-500"
         />
 
     ) : (
-        <span className="inline-block" onClick={() => setEditingMealId(uuid)}>
+        <span className="inline-block text-black" onClick={() => setEditingMealId(uuid)}>
         {tempValue}g
+
     </span>
     );
 
 }
+
 export default EditableField;

@@ -24,7 +24,6 @@ function DayCard({day, date, meals, isToday}) {
 
 
     const mealsByTimeAndType = meals.reduce((acc, meal) => {
-        // Klucz do grupowania to czas i typ posiłku
         const key = `${meal.time}-${meal.type}`;
         if (!acc[key]) {
             acc[key] = {
@@ -39,10 +38,9 @@ function DayCard({day, date, meals, isToday}) {
 
     const mealsArray = Object.values(mealsByTimeAndType);
 
-
     return (
         <div
-            className={`bg-gray-100 p-4 rounded-lg shadow-md space-y-4 h-full ${isToday ? 'ring-4 ring-blue-300' : ''}`}
+            className={`bg-gray-100 p-4 rounded-lg  shadow-md space-y-4 h-full ${isToday ? 'ring-4 ring-blue-300' : ''}`}
             style={{minHeight: '450px'}}>
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-semibold">{day.charAt(0).toUpperCase() + day.slice(1)}</h2>
