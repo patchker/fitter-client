@@ -1,6 +1,8 @@
 <h1>Fitter</h1>
 <h3>Gym and Diet Tracker Web Application</h3>
 <p>The application is available at the <a href="https://patchker.com/works/fitter/">link</a>.</p>
+<p>Server side code is available at the <a href="github.com/patchker/fitter-server">link</a>.</p>
+
 <p>Welcome to my Gym and Diet Tracker, a comprehensive web application designed for fitness enthusiasts and dietitians. This platform is dedicated to helping users monitor their gym progress and track dietary habits effectively. Built with a focus on user-friendly experience and functionality, my application leverages the latest in web technology to deliver a seamless and productive user experience.</p>
 
 <img src="./fitter.png">
